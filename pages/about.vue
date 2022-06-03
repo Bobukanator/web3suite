@@ -1,10 +1,10 @@
 <template>
-  <section>
+  <section class="section">
     <NuxtLink to="/">
-      <div class="columns is-centered notification is-primary">
+      <div class="columns is-centered notification is-black">
         <div class="column is-3">
           <b-image
-            :src="require('@/assets/Web3 Suite-logos.jpeg')"
+            :src="require('static/images/web3BrainLogo200x200.png')"
             alt="The Web3 Suites logo"
             class="is-small"
           ></b-image>
@@ -16,7 +16,6 @@
         <div class="content column is-half is-offset-one-quarter">
           <p>Information about Web3 Suite here.</p>
         </div>
-      </div>
       </div>
     </section>
   </section>

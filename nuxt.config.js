@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Web3 Suite',
+    titleTemplate: 'Web3 Suite: %s',
     htmlAttrs: {
       lang: 'en'
     },

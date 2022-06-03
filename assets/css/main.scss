@@ -72,3 +72,9 @@ $link-focus-border: $primary;
 .navbar-item img {
   max-height: 65px
 }
+
+@include from($desktop) {
+  .welcomeBackground {
+    background: url("/images/sun-5682667_1920.jpg") center center/cover no-repeat;
+  }
+}

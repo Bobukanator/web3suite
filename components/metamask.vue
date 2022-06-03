@@ -33,8 +33,14 @@ export default {
       if (window.ethereum) return window.ethereum.selectedAddress;
       return null;
     },
+    SelectedAddressTrunc: function () {
+      if (window.ethereum)
+        return window.ethereum.selectedAddress.substring(0, 6) + "...";
+      return null;
+    },
     chainId: function () {
-      return window.ethereum.chainId;
+      if (window.ethereum) return window.ethereum.chainId;
+      return null;
     },
   },
   methods: {
@@ -48,13 +54,4 @@ export default {
     },
   },
 };
-
-//VERY BASIC handlers TODO -> Make these more Vue like
-ethereum.on("chainChanged", reloadPage);
-ethereum.on("accountsChanged", reloadPage);
-
-function reloadPage(_chainId) {
-  // reload the page - SUPER BASIC
-  window.location.reload();
-}
 </script>

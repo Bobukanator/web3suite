@@ -26,3 +26,5 @@ $ npm run generate
 
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
+## Misc Information
+Welcome background image from https://pixabay.com/users/publicdpb-5839858/
