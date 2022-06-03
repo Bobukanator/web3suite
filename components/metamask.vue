@@ -1,18 +1,22 @@
 <template>
   <section class="section">
     <div class="columns is-centered">
-      <div class="column is 8 has-text-centered" v-if="!MetaMaskEnabled">
-          <a href="https://metamask.io/download/"
-            >Please install MetaMask to connect.</a
-          >
-        </p>
+      <div class="column is 8 has-text-centered" v-if="!WalletEnabled">
+        <a href="https://metamask.io/download/"
+          >Please install MetaMask to connect.</a
+        >
       </div>
-      <div class="column is 8 has-text-centered" v-if="MetaMaskEnabled && !UserConnected">
-        <b-button type="is-primary" @click="connect()">Connect to MetaMask</b-button>
+      <div
+        class="column is 8 has-text-centered"
+        v-if="WalletEnabled && !UserConnected"
+      >
+        <b-button type="is-primary" @click="connect()"
+          >Connect to MetaMask</b-button
+        >
       </div>
       <div class="column is 8 has-text-centered" v-if="UserConnected">
-        <h1 class="title">Account: {{SelectedAddress}}</h1>
-        <h2 class="subtitle">ChainId: {{chainId}}</h2>
+        <h1 class="title">Account: {{ SelectedAddress }}</h1>
+        <h2 class="subtitle">ChainId: {{ ChainId }}</h2>
       </div>
     </div>
   </section>
@@ -21,36 +25,49 @@
 export default {
   name: "MetaMask",
   computed: {
-    MetaMaskEnabled: function () {
-      if (window.ethereum !== undefined) return true;
-      return false;
+    WalletEnabled: function () {
+      return this.$store.state.WalletEnabled;
     },
     UserConnected: function () {
-      if (window.ethereum && window.ethereum.selectedAddress) return true;
-      return false;
+      return this.$store.state.UserConnected;
     },
     SelectedAddress: function () {
-      if (window.ethereum) return window.ethereum.selectedAddress;
-      return null;
+      return this.$store.state.SelectedAddress;
     },
-    SelectedAddressTrunc: function () {
-      if (window.ethereum)
-        return window.ethereum.selectedAddress.substring(0, 6) + "...";
-      return null;
-    },
-    chainId: function () {
-      if (window.ethereum) return window.ethereum.chainId;
-      return null;
+    ChainId: function () {
+      return this.$store.state.ChainId;
     },
   },
   methods: {
-    connect() {
-      window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
+    async connect() {
+      try {
+        this.initWeb3();
+        await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+      } catch (error) {
+        // User denied account access
+        console.error("Exception connect to ethereum", error);
+        return;
+      }
+      this.initWeb3();
     },
-    handleAccountsChanged() {
-      alert("CHANGED");
+    initWeb3() {
+      try {
+        if (window.ethereum.selectedAddress) {
+          this.$store.commit("set_userconnected", true);
+          console.log("User Connected");
+        }
+        if (window.ethereum.selectedAddress)
+          this.$store.commit("set_address", window.ethereum.selectedAddress);
+        if (window.ethereum.chainId)
+          this.$store.commit("set_chain", window.ethereum.chainId);
+        // Save it to store
+      } catch (error) {
+        // User denied account access
+        console.error("initWeb3", error);
+        return;
+      }
     },
   },
 };

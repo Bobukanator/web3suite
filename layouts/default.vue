@@ -29,7 +29,7 @@
         </template>
         <template #end>
           <b-navbar-item tag="div">
-            <div class="buttons" v-if="MetaMaskEnabled && !UserConnected">
+            <div class="buttons" v-if="WalletEnabled && !UserConnected">
               <a class="button is-primary" @click="connect()">
                 <strong>Connect Wallet</strong>
               </a>
@@ -59,48 +59,78 @@
 <script>
 export default {
   name: "defaultLayout",
+  mounted() {
+    if (typeof window.ethereum !== "undefined") {
+      console.log("Wallet installed.");
+      this.$store.commit("set_walletenabled", true);
+    }
+  },
   computed: {
-    MetaMaskEnabled: function () {
-      if (window.ethereum !== undefined) return true;
-      return false;
+    WalletEnabled: function () {
+      return this.$store.state.WalletEnabled;
     },
     UserConnected: function () {
-      if (window.ethereum && window.ethereum.selectedAddress) return true;
-      return false;
+      return this.$store.state.UserConnected;
     },
     SelectedAddress: function () {
-      if (window.ethereum) return window.ethereum.selectedAddress;
-      return null;
+      return this.$store.state.SelectedAddress;
     },
     SelectedAddressTrunc: function () {
-      if (window.ethereum)
-        return window.ethereum.selectedAddress.substring(0, 6) + "...";
+      if (this.$store.state.SelectedAddress)
+        return this.$store.state.SelectedAddress.substring(0, 6) + "...";
       return null;
     },
     chainId: function () {
-      if (window.ethereum) return window.ethereum.chainId;
-      return null;
+      return this.$store.state.ChainId;
     },
   },
   methods: {
-    connect() {
-      window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
+    async connect() {
+      try {
+        this.initWeb3();
+        await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+      } catch (error) {
+        // User denied account access
+        console.error("Exception connect to ethereum", error);
+        return;
+      }
+      this.initWeb3();
+    },
+    initWeb3() {
+      try {
+        if (window.ethereum.selectedAddress) {
+          this.$store.commit("set_userconnected", true);
+          console.log("User Connected");
+        }
+        if (window.ethereum.selectedAddress)
+          this.$store.commit("set_address", window.ethereum.selectedAddress);
+        if (window.ethereum.chainId)
+          this.$store.commit("set_chain", window.ethereum.chainId);
+        // Save it to store
+      } catch (error) {
+        // User denied account access
+        console.error("initWeb3", error);
+        return;
+      }
     },
   },
 };
 
-//VERY BASIC handlers TODO -> Make these more Vue like
+//Window.ethereum event handlers as defined here:
+//https://docs.metamask.io/guide/ethereum-provider.html#events
 try {
-  ethereum.on("chainChanged", reloadPage);
-  ethereum.on("accountsChanged", reloadPage);
+  window.ethereum.on("accountsChanged", accountsChanged);
 } catch {
   console.log("no wallet installed");
 }
 
-function reloadPage(_chainId) {
-  // reload the page - SUPER BASIC
-  window.location.reload();
+function accountsChanged(ArrayOfAccounts) {
+  if (ArrayOfAccounts.length == 0) {
+    //if the user disconnects from our site, reload the site
+    console.log("reload invoked by ethereum wallet");
+    window.location.reload();
+  }
 }
 </script>

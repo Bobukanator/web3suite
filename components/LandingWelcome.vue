@@ -1,7 +1,7 @@
 <template>
   <div class="welcomeBackground">
     <b-notification
-      v-if="!MetaMaskEnabled || !UserConnected"
+      v-if="!WalletEnabled || !UserConnected"
       type="is-dark"
       has-icon
       icon="account"
@@ -83,26 +83,11 @@
 export default {
   name: "LandingWelcome",
   computed: {
-    MetaMaskEnabled: function () {
-      if (window.ethereum !== undefined) return true;
-      return false;
+    WalletEnabled: function () {
+      return this.$store.state.WalletEnabled;
     },
     UserConnected: function () {
-      if (window.ethereum && window.ethereum.selectedAddress) return true;
-      return false;
-    },
-    SelectedAddress: function () {
-      if (window.ethereum) return window.ethereum.selectedAddress;
-      return null;
-    },
-    SelectedAddressTrunc: function () {
-      if (window.ethereum)
-        return window.ethereum.selectedAddress.substring(0, 6) + "...";
-      return null;
-    },
-    chainId: function () {
-      if (window.ethereum) return window.ethereum.chainId;
-      return null;
+      return this.$store.state.UserConnected;
     },
   },
   methods: {

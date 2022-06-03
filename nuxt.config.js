@@ -35,10 +35,8 @@ export default {
     // https://go.nuxtjs.dev/buefy
     'nuxt-buefy',
   ],
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
-
   ssr: false
 }
