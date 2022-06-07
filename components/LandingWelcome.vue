@@ -57,8 +57,8 @@
               <h4><b>Web3 Marketing Tools</b></h4>
               <p>
                 The Web3 Suite provides the ability to create and push content
-                to other popular web3 platforms so you can manage & create once,
-                and publish twice!
+                to other popular web3 platforms so you can create once and
+                publish twice!
               </p>
             </div>
           </NuxtLink>
@@ -74,8 +74,8 @@
     >
       As web3 matures, companies, brands, and infuencers must create, implement,
       and monitor a web3 marking strategy and will need robust supporting tools
-      that streamline what would otherwise be a redundant and inefcient process.
-      The Web3 Suite is designed to enable web3 strategy success!
+      that streamline what would otherwise be a redundant and inefficient
+      process. The Web3 Suite is designed to enable web3 strategy success!
     </b-notification>
   </div>
 </template>

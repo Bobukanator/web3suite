@@ -102,10 +102,8 @@ export default {
       try {
         if (window.ethereum.selectedAddress) {
           this.$store.commit("set_userconnected", true);
-          console.log("User Connected");
-        }
-        if (window.ethereum.selectedAddress)
           this.$store.commit("set_address", window.ethereum.selectedAddress);
+        }
         if (window.ethereum.chainId)
           this.$store.commit("set_chain", window.ethereum.chainId);
         // Save it to store
