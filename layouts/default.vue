@@ -13,7 +13,7 @@
           </b-navbar-item>
           <b-navbar-item
             tag="router-link"
-            :to="{ path: '/interview/interview-assistant' }"
+            :to="{ path: '/dashboard' }"
             v-if="UserConnected"
           >
             Dashboard
