@@ -1,70 +1,48 @@
 <template>
   <div class="welcomeBackground">
-    <b-notification
-      v-if="!WalletEnabled || !UserConnected"
-      type="is-dark"
-      has-icon
-      icon="account"
-      aria-close-label="Close notification"
-      role="alert"
-    >
-      <Metamask></Metamask>
-    </b-notification>
     <section class="section is-large">
-      <div class="tile is-ancestor">
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Web3 Footprint</b></h4>
-              <p>Account: {{ SelectedAddress }}</p>
-              <p>Network: {{ Network }}</p>
-            </div>
-          </NuxtLink>
+      <div class="container">
+        <div class="card m-2">
+          <header class="card-header">
+            <p class="card-header-title">Web3 Footprint</p>
+          </header>
+          <div class="card-content">
+            <p><b>Account:</b> {{ SelectedAddress }}</p>
+            <p><b>Network:</b> {{ Network }}</p>
+          </div>
         </div>
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Digital Assets</b></h4>
-              <p>Overview of NFTs</p>
+
+        <div class="card m-2">
+          <header class="card-header">
+            <p class="card-header-title">Digital Assets</p>
+          </header>
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <figure class="image is-48x48">
+                  <img
+                    src="https://storage.googleapis.com/opensea-static/Logomark/Logomark-Blue.png"
+                    alt="OpenSea Logo"
+                  />
+                </figure>
+              </div>
+              <div class="media-content">
+                <p class="title is-4">OpenSea</p>
+              </div>
             </div>
-          </NuxtLink>
-        </div>
-      </div>
-      <div class="tile is-ancestor">
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Web3 Strategic Coach</b></h4>
-              <p>Connect Now !</p>
+
+            <div class="content">
+              <OpenSeaAssets></OpenSeaAssets>
             </div>
-          </NuxtLink>
-        </div>
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Web3 Marketing Tools</b></h4>
-              <p>Create Content</p>
-            </div>
-          </NuxtLink>
+          </div>
         </div>
       </div>
     </section>
-    <b-notification
-      type="is-primary"
-      has-icon
-      icon="lightbulb-on-outline"
-      aria-close-label="Close notification"
-      role="alert"
-    >
-      As web3 matures, companies, brands, and infuencers must create, implement,
-      and monitor a web3 marking strategy and will need robust supporting tools
-      that streamline what would otherwise be a redundant and inefficient
-      process. The Web3 Suite is designed to enable web3 strategy success!
-    </b-notification>
   </div>
 </template>
 <script>
 import { getHumanReadableNetworkFromChainId } from "~/utils/cryptoUtils";
+import OpenSeaAssets from "./OpenSeaAssets.vue";
 export default {
   name: "Dashboard",
   computed: {
@@ -91,5 +69,6 @@ export default {
       });
     },
   },
+  components: { OpenSeaAssets },
 };
 </script>

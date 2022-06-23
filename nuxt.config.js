@@ -15,13 +15,16 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  env: {
+    BASE_URL: process.env.BASE_URL || 'http://localhost:3000'
+  },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['@/assets/css/main.scss'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/gs.client'],
+  plugins: ['~/plugins/dataApi', '~/plugins/gs.client'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -33,7 +36,7 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/buefy
-    'nuxt-buefy',
+    'nuxt-buefy', "~/modules/opensea"
   ],
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
