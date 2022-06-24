@@ -27,13 +27,10 @@
                 </figure>
               </div>
               <div class="media-content">
-                <p class="title is-4">OpenSea</p>
+                <p class="title">OpenSea</p>
               </div>
             </div>
-
-            <div class="content">
-              <OpenSeaAssets></OpenSeaAssets>
-            </div>
+            <OpenSeaAssets></OpenSeaAssets>
           </div>
         </div>
       </div>
