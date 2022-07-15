@@ -22,7 +22,7 @@ export default function () {
     var headers = {
       'Content-Type': 'application/json',
       'Access-Control-Request-Headers': '*',
-      /**'api-key': process.env.OPENSEAAPIKEY**/
+      'api-key': ''
     }
 
     var params = {
@@ -39,8 +39,13 @@ export default function () {
 
 
     console.log("Calling with the following params:" + JSON.stringify(params))
-    const response = await axios.get('https://testnets-api.opensea.io/api/v1/assets', { params });
-    sendJSON(response.data, res);
+    const responseTest = await axios.get('https://testnets-api.opensea.io/api/v1/assets', { params });
+    //const responseProd = await axios.get('https://api.opensea.io/api/v1/assets', { params });
+    const responseProd = {data:null}
+
+    const response = {"test":responseTest.data,"prod":responseProd.data}
+
+    sendJSON(response, res);
   }
 
   function sendJSON(data, res) {
