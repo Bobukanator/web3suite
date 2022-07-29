@@ -52,7 +52,7 @@
           </NuxtLink>
         </div>
         <div class="tile is-parent is-6">
-          <NuxtLink to="/">
+          <NuxtLink to="/tools">
             <div class="tile is-child notification is-primary">
               <h4><b>Web3 Marketing Tools</b></h4>
               <p>

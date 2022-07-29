@@ -18,6 +18,13 @@
           >
             Dashboard
           </b-navbar-item>
+          <b-navbar-item
+            tag="router-link"
+            :to="{ path: '/tools' }"
+            v-if="UserConnected"
+          >
+            Tools
+          </b-navbar-item>
           <b-navbar-dropdown label="Info">
             <b-navbar-item tag="router-link" :to="{ path: '/about' }">
               About
