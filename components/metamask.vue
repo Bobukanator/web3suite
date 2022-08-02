@@ -22,6 +22,7 @@
   </section>
 </template>
 <script>
+import Web3 from "web3";
 export default {
   name: "MetaMask",
   computed: {
@@ -35,7 +36,7 @@ export default {
       return this.$store.state.SelectedAddress;
     },
     ChainId: function () {
-      return this.$store.state.ChainId;
+      return Web3.utils.hexToNumber(this.$store.state.ChainId);
     },
   },
   methods: {

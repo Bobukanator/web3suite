@@ -1,19 +1,22 @@
 
 export function getHumanReadableNetworkFromChainId(chainID) {
-  for (let network of SupportedNetworks) {
-    if (network.id == chainID) return network.name
+  return getChainInfoFromId(chainID).name
+}
+
+export function getChainInfoFromId(chainID) {
+  for (let chaininfo of SupportedNetworks) {
+    if (chaininfo.id == chainID) return chaininfo
   }
   return null;
 }
 
 export const SupportedNetworks = [
-  { id: "0x1", name: "Ethereum Mainnet" },
-  { id: "0x3", name: "Ropsten Test Network" },
-  { id: "0x4", name: "Rinkeby Test Network" },
-  { id: "0x5", name: "Goerli Test Network" },
-  { id: "0x38", name: "Binance Smart Chain" },
-  { id: "0x137", name: "Matic Mainnet" },
-  { id: "0x42", name: "Kovan Test Network" },
-  { id: "0x2018", name: "Ethereum Dev Network" },
-  { id: "0x61", name: "Ethereum Classic" }
+  { id: "1", name: "Ethereum Mainnet", nativecurrency: "Ether", rpcurl: "https://api.mycryptoapi.com/eth", explorerurl: "https://etherscan.io" },
+  { id: "3", name: "Ropsten Test Network", nativecurrency: "Ropsten Ether", rpcurl: "https://ropsten.infura.io/v3/", explorerurl: "" },
+  { id: "4", name: "Rinkeby Test Network", nativecurrency: "Rinkeby Ether", rpcurl: "https://rinkeby.infura.io/v3/", explorerurl: "" },
+  { id: "5", name: "Goerli Test Network", nativecurrency: "Görli Ether", rpcurl: "https://rpc.goerli.mudit.blog/", explorerurl: "" },
+  { id: "56", name: "Binance Smart Chain", nativecurrency: "Binance Chain Native Token", rpcurl: "https://bsc-dataseed1.binance.org", explorerurl: "" },
+  { id: "137", name: "Matic Mainnet", nativecurrency: "Matic", rpcurl: "https://polygon-rpc.com", explorerurl: "https://polygonscan.com/" },
+  { id: "42", name: "Kovan Test Network", nativecurrency: "Kovan Ether", rpcurl: "https://kovan.optimism.io/", explorerurl: "" },
+  { id: "250", name: "Fantom Network", nativecurrency: "Fantom", rpcurl: "https://rpcapi.fantom.network/", explorerurl: "https://ftmscan.com" }
 ] 

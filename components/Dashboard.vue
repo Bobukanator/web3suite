@@ -38,6 +38,7 @@
   </div>
 </template>
 <script>
+import Web3 from "web3";
 import { getHumanReadableNetworkFromChainId } from "~/utils/cryptoUtils";
 import OpenSeaAssets from "./OpenSeaAssets.vue";
 export default {
@@ -53,7 +54,9 @@ export default {
       return this.$store.state.ChainId;
     },
     Network: function () {
-      return getHumanReadableNetworkFromChainId(this.$store.state.ChainId);
+      return getHumanReadableNetworkFromChainId(
+        Web3.utils.hexToNumber(this.$store.state.ChainId)
+      );
     },
     SelectedAddress: function () {
       return this.$store.state.SelectedAddress;

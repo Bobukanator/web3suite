@@ -25,7 +25,9 @@
 import {
   getHumanReadableNetworkFromChainId,
   SupportedNetworks,
+  getChainInfoFromId,
 } from "~/utils/cryptoUtils";
+import Web3 from "web3";
 export default {
   name: "ChangeNetwork",
   data() {
@@ -47,7 +49,9 @@ export default {
       return this.$store.state.ChainId;
     },
     Network: function () {
-      return getHumanReadableNetworkFromChainId(this.$store.state.ChainId);
+      return getHumanReadableNetworkFromChainId(
+        Web3.utils.hexToNumber(this.$store.state.ChainId)
+      );
     },
     SupportedNetworks: function () {
       return SupportedNetworks;
@@ -59,32 +63,50 @@ export default {
         console.log("Network change to: " + this.newNetwork);
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: this.newNetwork }],
+          params: [{ chainId: Web3.utils.toHex(this.newNetwork) }],
         });
         console.log("You have switched to network " + this.newNetwork);
         this.initWeb3();
       } catch (error) {
-        // User denied account access
-        console.error("Exception connect to ethereum", error);
-        this.$buefy.dialog.alert({
-          title: "Error",
-          message:
-            "Could not connect to the network with id:" +
-            this.newNetwork +
-            " It is possible your wallet does not currently support this network.",
-          type: "is-danger",
-          hasIcon: true,
-          icon: "times-circle",
-          iconPack: "fa",
-          ariaRole: "alertdialog",
-          ariaModal: true,
-        });
-        return;
+        if (error.code == 4902) {
+          try {
+            const NewChain = getChainInfoFromId(this.newNetwork);
+            await ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: Web3.utils.toHex(NewChain.id),
+                  chainName: NewChain.name,
+                  rpcUrls: [NewChain.rpcurl],
+                },
+              ],
+            });
+          } catch (addError) {
+            console.error("Exception adding network to the wallet", addError);
+          }
+        } else {
+          // User denied account access
+          console.error("Exception connect to ethereum", error);
+          this.$buefy.dialog.alert({
+            title: "Error",
+            message:
+              "Could not connect to the network with id:" +
+              this.newNetwork +
+              " It is possible your wallet does not currently support this network.",
+            type: "is-danger",
+            hasIcon: true,
+            icon: "times-circle",
+            iconPack: "fa",
+            ariaRole: "alertdialog",
+            ariaModal: true,
+          });
+          return;
+        }
       }
     },
     initWeb3() {
       try {
-        this.$store.commit("set_chain", this.newNetwork);
+        this.$store.commit("set_chain", Web3.utils.toHex(this.newNetwork));
         console.log("changed chainid:" + this.newNetwork);
         // Save it to store
       } catch (error) {
