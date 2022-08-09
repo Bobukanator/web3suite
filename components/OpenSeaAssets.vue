@@ -22,6 +22,7 @@ export default {
       openSeaAssets: {},
       assetAmount: 0,
       testAssetAmount: 0,
+      etherTransactions: {},
     };
   },
   computed: {
@@ -49,6 +50,7 @@ export default {
   },
   mounted() {
     this.getOpenSeaAssets();
+    this.getEtherTransactions();
   },
   methods: {
     async getOpenSeaAssets() {
@@ -57,6 +59,11 @@ export default {
       );
       //this.assetAmount = this.openSeaAssets.prod.assets.length;
       this.testAssetAmount = this.openSeaAssets.test.assets.length;
+    },
+    async getEtherTransactions() {
+      this.etherTransactions = await this.$dataApi.getEtherTransactions(
+        this.SelectedAddress
+      );
     },
   },
 };

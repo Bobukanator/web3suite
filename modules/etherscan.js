@@ -6,10 +6,10 @@ export default function () {
 
   this.nuxt.hook('render:setupMiddleware', (app) => {
     app.use(bodyParser.json());
-    app.use('/api/getopenseaassets', getOpenSeaAssets);
+    app.use('/api/getethertransactions', getEtherTransactions);
   })
 
-  async function getOpenSeaAssets(req, res) {
+  async function getEtherTransactions(req, res) {
 
     const body = req.body;
     if (!body || !body.owner) {
@@ -26,24 +26,27 @@ export default function () {
     }
 
     var params = {
-      "owner": owner,
-      "order_direction": "desc",
-      "offset": 0,
-      "limit": 50
+      "module": "account",
+      "action": "txlist",
+      "address": owner,
+      "startblock": 0,
+      "endblock": 99999999,
+      "page": 1,
+      "offset": 10,
+      "sort": "asc",
+      "apikey": process.env.ETHERSCAN_APIKEY
     }
 
-    callOpenSeaTest(params, res);
+    callEtherTransactions(params, res);
   }
 
-  async function callOpenSeaTest(params, res) {
+  async function callEtherTransactions(params, res) {
 
 
     console.log("Calling with the following params:" + JSON.stringify(params))
-    const responseTest = await axios.get('https://testnets-api.opensea.io/api/v1/assets', { params });
-    //const responseProd = await axios.get('https://api.opensea.io/api/v1/assets', { params });
-    const responseProd = { data: null }
+    const responseProd = await axios.get('https://api.etherscan.io/api', { params });
 
-    const response = { "test": responseTest.data, "prod": responseProd.data }
+    const response = responseProd.data
 
     sendJSON(response, res);
   }
