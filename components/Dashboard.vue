@@ -12,27 +12,8 @@
           </div>
         </div>
 
-        <div class="card m-2">
-          <header class="card-header">
-            <p class="card-header-title">Digital Assets</p>
-          </header>
-          <div class="card-content">
-            <div class="media">
-              <div class="media-left">
-                <figure class="image is-48x48">
-                  <img
-                    src="https://storage.googleapis.com/opensea-static/Logomark/Logomark-Blue.png"
-                    alt="OpenSea Logo"
-                  />
-                </figure>
-              </div>
-              <div class="media-content">
-                <p class="title">OpenSea</p>
-              </div>
-            </div>
-            <OpenSeaAssets></OpenSeaAssets>
-          </div>
-        </div>
+        <OpenSeaAssets></OpenSeaAssets>
+        <EtherTransactions></EtherTransactions>
       </div>
     </section>
   </div>
@@ -41,6 +22,7 @@
 import Web3 from "web3";
 import { getHumanReadableNetworkFromChainId } from "~/utils/cryptoUtils";
 import OpenSeaAssets from "./OpenSeaAssets.vue";
+import EtherTransactions from "./EtherTransactions.vue";
 export default {
   name: "Dashboard",
   computed: {
@@ -69,6 +51,6 @@ export default {
       });
     },
   },
-  components: { OpenSeaAssets },
+  components: { OpenSeaAssets, EtherTransactions },
 };
 </script>
