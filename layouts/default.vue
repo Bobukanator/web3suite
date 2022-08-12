@@ -67,9 +67,12 @@
 export default {
   name: "defaultLayout",
   mounted() {
-    if (typeof window.ethereum !== "undefined") {
-      console.log("Wallet installed.");
-      this.$store.commit("set_walletenabled", true);
+    if (typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
+      this.handleEthereum();
+    } else {
+      window.addEventListener("ethereum#initialized", this.handleEthereum, {
+        once: true,
+      });
     }
   },
   computed: {
@@ -119,6 +122,9 @@ export default {
         console.error("initWeb3", error);
         return;
       }
+    },
+    handleEthereum() {
+      this.$store.commit("set_walletenabled", true);
     },
   },
 };
