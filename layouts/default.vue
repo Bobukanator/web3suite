@@ -67,12 +67,13 @@
 export default {
   name: "defaultLayout",
   mounted() {
-    if (typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
-      this.handleEthereum();
+    if (window.ethereum) {
+      handleEthereum();
     } else {
-      window.addEventListener("ethereum#initialized", this.handleEthereum, {
+      window.addEventListener("ethereum#initialized", handleEthereum, {
         once: true,
       });
+      setTimeout(handleEthereum, 3000); // 3 seconds
     }
   },
   computed: {
@@ -123,9 +124,6 @@ export default {
         return;
       }
     },
-    handleEthereum() {
-      this.$store.commit("set_walletenabled", true);
-    },
   },
 };
 
@@ -142,6 +140,16 @@ function accountsChanged(ArrayOfAccounts) {
     //if the user disconnects from our site, reload the site
     console.log("reload invoked by ethereum wallet");
     window.location.reload();
+  }
+}
+
+function handleEthereum() {
+  const { ethereum } = window;
+  if (ethereum && ethereum.isMetaMask) {
+    console.log("Ethereum successfully detected!");
+    $nuxt.$store.commit("set_walletenabled", true);
+  } else {
+    console.log("Please install MetaMask!");
   }
 }
 </script>
