@@ -53,6 +53,14 @@
             >
               {{ getTransactionType(props.row.methodId) }}
             </b-table-column>
+            <b-table-column
+              field="value"
+              label="Value"
+              width="40"
+              v-slot="props"
+            >
+              {{ getEtherFromWei(props.row.value) }}
+            </b-table-column>
           </b-table>
         </div>
         <div v-if="!transactionsExist">
@@ -63,6 +71,7 @@
   </div>
 </template>
 <script>
+import Web3 from "web3";
 import { getTransactionTypeFromHex } from "~/utils/cryptoUtils";
 export default {
   name: "EtherTransactions",
@@ -89,6 +98,9 @@ export default {
         this.SelectedAddress
       );
       if (this.etherTransactions.status == "1") this.transactionsExist = true;
+    },
+    getEtherFromWei(value) {
+      return Web3.utils.fromWei(value);
     },
   },
 };
