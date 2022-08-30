@@ -1,12 +1,12 @@
 import axios from 'axios'
 import bodyParser from 'body-parser'
-import url from 'url'
 
 export default function () {
 
   this.nuxt.hook('render:setupMiddleware', (app) => {
     app.use(bodyParser.json());
     app.use('/api/getethertransactions', getEtherTransactions);
+    app.use('/api/getetherbalance', getEtherBalance);
   })
 
   async function getEtherTransactions(req, res) {
@@ -17,12 +17,10 @@ export default function () {
     }
 
     const owner = body.owner;
-    console.log("Owner is: " + owner)
 
     var headers = {
       'Content-Type': 'application/json',
-      'Access-Control-Request-Headers': '*',
-      'api-key': ''
+      'Access-Control-Request-Headers': '*'
     }
 
     var params = {
@@ -34,6 +32,30 @@ export default function () {
       "page": 1,
       "offset": 10,
       "sort": "asc",
+      "apikey": process.env.ETHERSCAN_APIKEY
+    }
+
+    callEtherTransactions(params, res);
+  }
+
+  async function getEtherBalance(req, res) {
+    const body = req.body;
+    if (!body || !body.owner) {
+      return rejectHitBadRequest(res)
+    }
+
+    const owner = body.owner;
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Request-Headers': '*'
+    }
+
+    var params = {
+      "module": "account",
+      "action": "balance",
+      "address": owner,
+      "tag": "latest",
       "apikey": process.env.ETHERSCAN_APIKEY
     }
 

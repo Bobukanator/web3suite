@@ -79,6 +79,7 @@ export default {
     return {
       etherTransactions: {},
       transactionsExist: false,
+      etherBalance: 0,
     };
   },
   computed: {
@@ -88,6 +89,7 @@ export default {
   },
   mounted() {
     this.getEtherTransactions();
+    this.getEtherBalance();
   },
   methods: {
     getTransactionType(hex) {
@@ -98,6 +100,12 @@ export default {
         this.SelectedAddress
       );
       if (this.etherTransactions.status == "1") this.transactionsExist = true;
+    },
+    async getEtherBalance() {
+      const response = await this.$dataApi.getEtherBalance(
+        this.SelectedAddress
+      );
+      this.etherBalance = response.result;
     },
     getEtherFromWei(value) {
       return Web3.utils.fromWei(value);
