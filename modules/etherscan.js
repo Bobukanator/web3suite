@@ -7,6 +7,7 @@ export default function () {
     app.use(bodyParser.json());
     app.use('/api/getethertransactions', getEtherTransactions);
     app.use('/api/getetherbalance', getEtherBalance);
+    app.use('/api/gettokenbalance', getTokenBalance);
   })
 
   async function getEtherTransactions(req, res) {
@@ -54,6 +55,32 @@ export default function () {
     var params = {
       "module": "account",
       "action": "balance",
+      "address": owner,
+      "tag": "latest",
+      "apikey": process.env.ETHERSCAN_APIKEY
+    }
+
+    callEtherTransactions(params, res);
+  }
+
+  async function getTokenBalance(req, res) {
+    const body = req.body;
+    if (!body || !body.owner || !body.contractaddress) {
+      return rejectHitBadRequest(res)
+    }
+
+    const owner = body.owner;
+    const contractaddress = body.contractaddress;
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Request-Headers': '*'
+    }
+
+    var params = {
+      "module": "account",
+      "action": "tokenbalance",
+      "contractaddress": contractaddress,
       "address": owner,
       "tag": "latest",
       "apikey": process.env.ETHERSCAN_APIKEY
