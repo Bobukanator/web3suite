@@ -1,8 +1,12 @@
-import { getHumanReadableNetworkFromChainId, getChainInfoFromId, getTransactionTypeFromHex } from "../utils/cryptoUtils"
+import { getHumanReadableNetworkFromChainId, getChainInfoFromId, getTransactionTypeFromHex, parseTransaction, parseTransactions } from "../utils/cryptoUtils"
+import { toBN, fromWei } from "web3-utils";
 
 var fs = require('fs');
 const ETHERSCANTESTDATA = JSON.parse(fs.readFileSync('test/etherscantestdata.json', 'utf8'));
-
+const TRANSFERTESTDATA = ETHERSCANTESTDATA.result[0];
+const DEPOSITTESTDATA = ETHERSCANTESTDATA.result[1];
+const APPROVETESTDATA = ETHERSCANTESTDATA.result[2];
+const OWNER = ETHERSCANTESTDATA.owner;
 
 test('test getHumanReadableNetworkFromChainId', () => {
   expect(getHumanReadableNetworkFromChainId("1")).toBe("Ethereum Mainnet")
@@ -30,12 +34,42 @@ test('test getChainInfoFromChainId', () => {
 
 test('test getTransactionTypeDescription', () => {
 
-  const TransferTestData = ETHERSCANTESTDATA.result[0];
-  const DepositTestData = ETHERSCANTESTDATA.result[1];
-  const ApproveTestData = ETHERSCANTESTDATA.result[2];
-
-  expect(getTransactionTypeFromHex(TransferTestData.methodId)).toBe("Transfer")
-  expect(getTransactionTypeFromHex(DepositTestData.methodId)).toBe("Deposit")
-  expect(getTransactionTypeFromHex(ApproveTestData.methodId)).toBe("Approve")
+  expect(getTransactionTypeFromHex(TRANSFERTESTDATA.methodId)).toBe("Transfer")
+  expect(getTransactionTypeFromHex(DEPOSITTESTDATA.methodId)).toBe("Deposit")
+  expect(getTransactionTypeFromHex(APPROVETESTDATA.methodId)).toBe("Approve")
   expect(getTransactionTypeFromHex("invalidhex")).toBe("invalidhex")
+})
+
+test('test parseTransaction', () => {
+
+  let initialGas = toBN(toBN(TRANSFERTESTDATA.gasPrice) * toBN(TRANSFERTESTDATA.gasUsed))
+  let depositToWethGas = toBN(toBN(DEPOSITTESTDATA.gasPrice) * toBN(DEPOSITTESTDATA.gas))
+  let approveGas = toBN(toBN(APPROVETESTDATA.gasPrice) * toBN(APPROVETESTDATA.gas))
+
+  let parsedTRANSFERDATA = parseTransaction(TRANSFERTESTDATA, OWNER)
+  expect(parsedTRANSFERDATA.in_out).toBe("IN")
+  expect(parsedTRANSFERDATA.txn_fee).toBe(initialGas.toString())
+
+  let parsedDEPOSITTESTDATA = parseTransaction(DEPOSITTESTDATA, OWNER)
+  expect(parsedDEPOSITTESTDATA.in_out).toBe("OUT")
+  expect(parsedDEPOSITTESTDATA.txn_fee).toBe(depositToWethGas.toString())
+
+  let parsedAPROVETESTDATA = parseTransaction(APPROVETESTDATA, OWNER)
+  expect(parsedAPROVETESTDATA.in_out).toBe("OUT")
+  expect(parsedAPROVETESTDATA.txn_fee).toBe(approveGas.toString())
+
+})
+
+test('test parseTransactions', () => {
+
+  let parsedTransactions = parseTransactions(ETHERSCANTESTDATA.result, OWNER);
+  console.log(JSON.stringify(parsedTransactions));
+
+  expect(parsedTransactions[0]).toHaveProperty("in_out")
+  expect(parsedTransactions[0]).toHaveProperty("txn_fee")
+  expect(parsedTransactions[1]).toHaveProperty("in_out")
+  expect(parsedTransactions[1]).toHaveProperty("txn_fee")
+  expect(parsedTransactions[2]).toHaveProperty("in_out")
+  expect(parsedTransactions[2]).toHaveProperty("txn_fee")
+
 })

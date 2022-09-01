@@ -1,3 +1,4 @@
+import { toBN } from "web3-utils";
 
 export function getHumanReadableNetworkFromChainId(chainID) {
   return getChainInfoFromId(chainID).name
@@ -12,6 +13,20 @@ export function getChainInfoFromId(chainID) {
 
 export function getTransactionTypeFromHex(hex) {
   return TransactionType[hex] || hex;
+}
+
+export function parseTransaction(transaction, owner) {
+  if (transaction.to == owner)
+    transaction.in_out = "IN"
+  else
+    transaction.in_out = "OUT"
+
+  transaction.txn_fee = toBN(toBN(transaction.gasPrice) * toBN(transaction.gasUsed)).toString()
+  return transaction
+}
+
+export function parseTransactions(transactionarray, owner) {
+  return transactionarray.map(transaction => parseTransaction(transaction, owner))
 }
 
 export const SupportedNetworks = [

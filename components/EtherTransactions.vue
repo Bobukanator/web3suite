@@ -23,9 +23,10 @@
         <div>
           <p class="title">Transactions</p>
           <b-table
-            :data="etherTransactions.result"
+            :data="parsedEtherTransactions"
             :bordered="true"
             :striped="true"
+            npm
             :narrowed="true"
             :hoverable="true"
             :focusable="true"
@@ -40,7 +41,12 @@
             >
               {{ props.row.blockNumber }}
             </b-table-column>
-            <b-table-column field="timeStamp" label="Date" v-slot="props">
+            <b-table-column
+              field="timeStamp"
+              label="Date"
+              width="10"
+              v-slot="props"
+            >
               <span class="tag is-success">
                 {{ new Date(props.row.timeStamp * 1000).toLocaleDateString() }}
               </span>
@@ -61,6 +67,22 @@
             >
               {{ getEtherFromWei(props.row.value) }}
             </b-table-column>
+            <b-table-column
+              field="in_out"
+              label="INCOME/EXPENSE"
+              width="3"
+              v-slot="props"
+            >
+              {{ props.row.in_out }}
+            </b-table-column>
+            <b-table-column
+              field="txn_fee"
+              label="TXN FEE"
+              width="10"
+              v-slot="props"
+            >
+              {{ getEtherFromWei(props.row.txn_fee) }}
+            </b-table-column>
           </b-table>
         </div>
         <div v-if="!transactionsExist">
@@ -72,7 +94,10 @@
 </template>
 <script>
 import Web3 from "web3";
-import { getTransactionTypeFromHex } from "~/utils/cryptoUtils";
+import {
+  getTransactionTypeFromHex,
+  parseTransactions,
+} from "~/utils/cryptoUtils";
 export default {
   name: "EtherTransactions",
   data() {
@@ -85,6 +110,14 @@ export default {
   computed: {
     SelectedAddress: function () {
       return this.$store.state.SelectedAddress;
+    },
+    parsedEtherTransactions: function () {
+      if (this.transactionsExist)
+        return parseTransactions(
+          this.etherTransactions.result,
+          this.SelectedAddress
+        );
+      return {};
     },
   },
   mounted() {
