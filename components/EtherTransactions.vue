@@ -20,7 +20,7 @@
             </p>
           </div>
         </div>
-        <div>
+        <div class="container is-fluid">
           <p class="title">Transactions</p>
           <b-table
             :data="parsedEtherTransactions"
@@ -85,6 +85,18 @@
             </b-table-column>
           </b-table>
         </div>
+        <div class="container is-fluid">
+          <br></br>
+          <p>
+            <b>Current Ether Balance:</b> {{ getEtherFromWei(etherBalance) }}
+          </p>
+          <p>
+            <b>Current Token Balance:</b> {{ getEtherFromWei(tokenBalance) }}
+          </p>
+          <p>
+            <b>Total Balance (ETH):</b> {{ TotalFunds }}
+          </p>
+        </div>
         <div v-if="!transactionsExist">
           <p class="title">No transactions found</p>
         </div>
@@ -105,6 +117,7 @@ export default {
       etherTransactions: {},
       transactionsExist: false,
       etherBalance: 0,
+      tokenBalance: 0,
     };
   },
   computed: {
@@ -118,6 +131,15 @@ export default {
           this.SelectedAddress
         );
       return {};
+    },
+    TotalFunds: function () {
+      return Web3.utils.fromWei(
+        Web3.utils.toBN(
+          Web3.utils
+            .toBN(this.etherBalance)
+            .add(Web3.utils.toBN(this.tokenBalance))
+        )
+      );
     },
   },
   mounted() {
@@ -133,6 +155,7 @@ export default {
         this.SelectedAddress
       );
       if (this.etherTransactions.status == "1") this.transactionsExist = true;
+      this.getTokenBalance();
     },
     async getEtherBalance() {
       const response = await this.$dataApi.getEtherBalance(
@@ -140,8 +163,21 @@ export default {
       );
       this.etherBalance = response.result;
     },
+    async getTokenBalance() {
+      if (this.transactionsExist) {
+        this.etherTransactions.result.forEach(async (transaction) => {
+          if (transaction.methodId == "0xd0e30db0") {
+            const responseValue = await this.$dataApi.getTokenBalance(
+              this.SelectedAddress,
+              transaction.to
+            );
+            this.tokenBalance += Web3.utils.toBN(responseValue.result);
+          }
+        });
+      }
+    },
     getEtherFromWei(value) {
-      return Web3.utils.fromWei(value);
+      return Web3.utils.fromWei(Web3.utils.toBN(value));
     },
   },
 };
