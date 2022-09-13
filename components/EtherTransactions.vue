@@ -86,7 +86,7 @@
           </b-table>
         </div>
         <div class="container is-fluid">
-          <br></br>
+          <br />
           <p>
             <b>Current Ether Balance:</b> {{ getEtherFromWei(etherBalance) }}
           </p>
@@ -94,8 +94,11 @@
             <b>Current Token Balance:</b> {{ getEtherFromWei(tokenBalance) }}
           </p>
           <p>
-            <b>Total Balance (ETH):</b> {{ TotalFunds }}
+            <b>Total Balance (ETH/USD):</b> {{ TotalFunds }} / ${{
+              TotalFundsUSD
+            }}
           </p>
+          <p><b>Current ETH Price (1 ETH):</b> ${{ currentEthPriceUSD }}</p>
         </div>
         <div v-if="!transactionsExist">
           <p class="title">No transactions found</p>
@@ -118,6 +121,7 @@ export default {
       transactionsExist: false,
       etherBalance: 0,
       tokenBalance: 0,
+      currentEthPriceUSD: 0,
     };
   },
   computed: {
@@ -141,10 +145,14 @@ export default {
         )
       );
     },
+    TotalFundsUSD: function () {
+      return this.TotalFunds * this.currentEthPriceUSD;
+    },
   },
   mounted() {
     this.getEtherTransactions();
     this.getEtherBalance();
+    this.getEthPrice();
   },
   methods: {
     getTransactionType(hex) {
@@ -167,6 +175,7 @@ export default {
       if (this.transactionsExist) {
         this.etherTransactions.result.forEach(async (transaction) => {
           if (transaction.methodId == "0xd0e30db0") {
+            //MAGIC NUMBER - Move to CONSTANT
             const responseValue = await this.$dataApi.getTokenBalance(
               this.SelectedAddress,
               transaction.to
@@ -175,6 +184,10 @@ export default {
           }
         });
       }
+    },
+    async getEthPrice() {
+      const response = await this.$dataApi.getCurrentEthPrice();
+      this.currentEthPriceUSD = response.result.ethusd;
     },
     getEtherFromWei(value) {
       return Web3.utils.fromWei(Web3.utils.toBN(value));

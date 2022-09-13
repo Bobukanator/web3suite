@@ -8,6 +8,7 @@ export default function () {
     app.use('/api/getethertransactions', getEtherTransactions);
     app.use('/api/getetherbalance', getEtherBalance);
     app.use('/api/gettokenbalance', getTokenBalance);
+    app.use('/api/getcurrentethprice', getCurrentEtherPrice);
   })
 
   async function getEtherTransactions(req, res) {
@@ -17,17 +18,10 @@ export default function () {
       return rejectHitBadRequest(res)
     }
 
-    const owner = body.owner;
-
-    var headers = {
-      'Content-Type': 'application/json',
-      'Access-Control-Request-Headers': '*'
-    }
-
     var params = {
       "module": "account",
       "action": "txlist",
-      "address": owner,
+      "address":  body.owner,
       "startblock": 0,
       "endblock": 99999999,
       "page": 1,
@@ -45,17 +39,10 @@ export default function () {
       return rejectHitBadRequest(res)
     }
 
-    const owner = body.owner;
-
-    var headers = {
-      'Content-Type': 'application/json',
-      'Access-Control-Request-Headers': '*'
-    }
-
     var params = {
       "module": "account",
       "action": "balance",
-      "address": owner,
+      "address": body.owner,
       "tag": "latest",
       "apikey": process.env.ETHERSCAN_APIKEY
     }
@@ -69,20 +56,23 @@ export default function () {
       return rejectHitBadRequest(res)
     }
 
-    const owner = body.owner;
-    const contractaddress = body.contractaddress;
-
-    var headers = {
-      'Content-Type': 'application/json',
-      'Access-Control-Request-Headers': '*'
-    }
-
     var params = {
       "module": "account",
       "action": "tokenbalance",
-      "contractaddress": contractaddress,
-      "address": owner,
+      "contractaddress": body.contractaddress,
+      "address": body.owner,
       "tag": "latest",
+      "apikey": process.env.ETHERSCAN_APIKEY
+    }
+
+    callEtherTransactions(params, res);
+  }
+
+  async function getCurrentEtherPrice(req, res) {
+
+    var params = {
+      "module": "stats",
+      "action": "ethprice",
       "apikey": process.env.ETHERSCAN_APIKEY
     }
 
