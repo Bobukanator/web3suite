@@ -1,5 +1,5 @@
-import { getHumanReadableNetworkFromChainId, getChainInfoFromId, getTransactionTypeFromHex, parseTransaction, parseTransactions } from "../utils/cryptoUtils"
-import { toBN, fromWei } from "web3-utils";
+import { getHumanReadableNetworkFromChainId, getChainInfoFromId, getTransactionTypeFromHex, parseTransaction, parseTransactions,addHistoricEthPriceToTransaction } from "../utils/cryptoUtils"
+import { toBN } from "web3-utils";
 
 var fs = require('fs');
 const ETHERSCANTESTDATA = JSON.parse(fs.readFileSync('test/etherscantestdata.json', 'utf8'));
@@ -63,7 +63,6 @@ test('test parseTransaction', () => {
 test('test parseTransactions', () => {
 
   let parsedTransactions = parseTransactions(ETHERSCANTESTDATA.result, OWNER);
-  console.log(JSON.stringify(parsedTransactions));
 
   expect(parsedTransactions[0]).toHaveProperty("in_out")
   expect(parsedTransactions[0]).toHaveProperty("txn_fee")
@@ -72,4 +71,12 @@ test('test parseTransactions', () => {
   expect(parsedTransactions[2]).toHaveProperty("in_out")
   expect(parsedTransactions[2]).toHaveProperty("txn_fee")
 
+})
+
+test('test addHistoricEthPriceToTransaction', () => {
+
+  const price = "1000"
+  let transactionWithHistoricEthPrice = addHistoricEthPriceToTransaction(TRANSFERTESTDATA,price);
+  expect(transactionWithHistoricEthPrice).toHaveProperty("historicEthPrice")
+  expect(transactionWithHistoricEthPrice.historicEthPrice).toBe(price)
 })

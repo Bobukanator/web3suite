@@ -3,7 +3,7 @@ import { unWrap } from '~/utils/fetchUtils'
 export default function (context, inject) {
 
   inject('dataApi', {
-    getAssetsFromOpenSea, getEtherTransactions, getEtherBalance, getTokenBalance, getCurrentEthPrice
+    getAssetsFromOpenSea, getEtherTransactions, getEtherBalance, getTokenBalance, getCurrentEthPrice, getHistoricEtherBalance
   })
 
   async function getAssetsFromOpenSea(owner) {
@@ -86,6 +86,24 @@ export default function (context, inject) {
           'Content-Type': 'application/json',
         },
         method: 'POST'
+      }))
+      return response.json;
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async function getHistoricEtherBalance(date) {
+    try {
+      const response = await unWrap(await fetch(process.env.BASE_URL + "/api/gethistoricethprice", {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          date
+        })
       }))
       return response.json;
 

@@ -29,6 +29,11 @@ export function parseTransactions(transactionarray, owner) {
   return transactionarray.map(transaction => parseTransaction(transaction, owner))
 }
 
+export function addHistoricEthPriceToTransaction(transaction,price){
+  transaction.historicEthPrice = price
+  return transaction
+}
+
 export const SupportedNetworks = [
   { id: "1", name: "Ethereum Mainnet", nativecurrency: "Ether", rpcurl: "https://api.mycryptoapi.com/eth", explorerurl: "https://etherscan.io" },
   { id: "3", name: "Ropsten Test Network", nativecurrency: "Ropsten Ether", rpcurl: "https://ropsten.infura.io/v3/", explorerurl: "" },

@@ -83,6 +83,14 @@
             >
               {{ getEtherFromWei(props.row.txn_fee) }}
             </b-table-column>
+            <b-table-column
+              field="historicEthPrice"
+              label="Historic Price"
+              width="10"
+              v-slot="props"
+            >
+              ${{ props.row.historicEthPrice }}
+            </b-table-column>
           </b-table>
         </div>
         <div class="container is-fluid">
@@ -112,6 +120,7 @@ import Web3 from "web3";
 import {
   getTransactionTypeFromHex,
   parseTransactions,
+  addHistoricEthPriceToTransaction,
 } from "~/utils/cryptoUtils";
 export default {
   name: "EtherTransactions",
@@ -119,6 +128,7 @@ export default {
     return {
       etherTransactions: {},
       transactionsExist: false,
+      priceExists: false,
       etherBalance: 0,
       tokenBalance: 0,
       currentEthPriceUSD: 0,
@@ -129,11 +139,12 @@ export default {
       return this.$store.state.SelectedAddress;
     },
     parsedEtherTransactions: function () {
-      if (this.transactionsExist)
+      if (this.transactionsExist) {
         return parseTransactions(
           this.etherTransactions.result,
           this.SelectedAddress
         );
+      }
       return {};
     },
     TotalFunds: function () {
@@ -159,10 +170,20 @@ export default {
       return getTransactionTypeFromHex(hex);
     },
     async getEtherTransactions() {
-      this.etherTransactions = await this.$dataApi.getEtherTransactions(
+      let transactions = await this.$dataApi.getEtherTransactions(
         this.SelectedAddress
       );
-      if (this.etherTransactions.status == "1") this.transactionsExist = true;
+      if (transactions.status == "1") {
+        this.etherTransactions.result = await Promise.all(
+          transactions.result.map((transaction) =>
+            this.addHistoricEtherPrice(
+              transaction,
+              new Date(transaction.timeStamp * 1000).toLocaleDateString()
+            )
+          )
+        );
+        this.transactionsExist = true;
+      }
       this.getTokenBalance();
     },
     async getEtherBalance() {
@@ -171,11 +192,15 @@ export default {
       );
       this.etherBalance = response.result;
     },
+    async addHistoricEtherPrice(transaction, date) {
+      const price = await this.$dataApi.getHistoricEtherBalance(date);
+      return addHistoricEthPriceToTransaction(transaction, price);
+    },
     async getTokenBalance() {
       if (this.transactionsExist) {
         this.etherTransactions.result.forEach(async (transaction) => {
-          if (transaction.methodId == "0xd0e30db0") {
-            //MAGIC NUMBER - Move to CONSTANT
+          if (this.getTransactionType(transaction.methodId) == "Deposit") {
+            //IF DEPOSIT -> money put into token
             const responseValue = await this.$dataApi.getTokenBalance(
               this.SelectedAddress,
               transaction.to
