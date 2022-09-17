@@ -4,12 +4,12 @@ import {getEthPriceByDate,loadCSVData} from "../utils/historicEthPrice"
 
 export default function () {
 
-  var HISTORICETHDATA = null;
+  //var HISTORICETHDATA = null;
 
   this.nuxt.hook('ready', async nuxt => {
 
-    HISTORICETHDATA = await loadCSVData('static/HistoricalDataETHPRICE.csv')
-    console.log("CSV Historic ETH Data Loaded.")
+    //HISTORICETHDATA = await loadCSVData('static/HistoricalDataETHPRICE.csv')
+    //console.log("CSV Historic ETH Data Loaded.")
   })
 
   this.nuxt.hook('render:setupMiddleware', (app) => {
@@ -97,7 +97,8 @@ export default function () {
       return rejectHitBadRequest(res)
     }
 
-    const response = getEthPriceByDate(HISTORICETHDATA,body.date)
+    //const response = getEthPriceByDate(HISTORICETHDATA,body.date)
+    const response = "1000";
     sendJSON(response, res);
   }
 
