@@ -1,16 +1,9 @@
 import axios from 'axios'
 import bodyParser from 'body-parser'
-import {getEthPriceByDate,loadCSVData} from "../utils/historicEthPrice"
+import {getEthPriceByDate} from "../utils/historicEthPrice"
+import HISTORICJSONDATA from "../static/HistoricalDataETHPRICE.json"
 
 export default function () {
-
-  //var HISTORICETHDATA = null;
-
-  this.nuxt.hook('ready', async nuxt => {
-
-    //HISTORICETHDATA = await loadCSVData('static/HistoricalDataETHPRICE.csv')
-    //console.log("CSV Historic ETH Data Loaded.")
-  })
 
   this.nuxt.hook('render:setupMiddleware', (app) => {
     app.use(bodyParser.json());
@@ -97,8 +90,7 @@ export default function () {
       return rejectHitBadRequest(res)
     }
 
-    //const response = getEthPriceByDate(HISTORICETHDATA,body.date)
-    const response = "1000";
+    const response = getEthPriceByDate(HISTORICJSONDATA,body.date)
     sendJSON(response, res);
   }
 
