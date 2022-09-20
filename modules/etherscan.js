@@ -1,7 +1,7 @@
 import axios from 'axios'
 import bodyParser from 'body-parser'
 import {getEthPriceByDate} from "../utils/historicEthPrice"
-import HISTORICJSONDATA from "../static/HistoricalDataETHPRICE.json"
+import HISTORICJSONDATA from "../utils/HistoricalDataETHPRICE.json"
 
 export default function () {
 
