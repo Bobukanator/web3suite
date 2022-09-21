@@ -108,11 +108,20 @@
           </p>
           <p><b>Current ETH Price (1 ETH):</b> ${{ currentEthPriceUSD }}</p>
         </div>
+        <div class="container is-fluid">
+          <button class="button" @click="showProfitLoss = true">
+            Show Profit Loss Statement
+          </button>
+        </div>
         <div v-if="!transactionsExist">
           <p class="title">No transactions found</p>
         </div>
       </div>
     </div>
+    <ProfitLoss
+      v-show="showProfitLoss"
+      :Transactions="parsedEtherTransactions"
+    ></ProfitLoss>
   </div>
 </template>
 <script>
@@ -122,8 +131,10 @@ import {
   parseTransactions,
   addHistoricEthPriceToTransaction,
 } from "~/utils/cryptoUtils";
+import ProfitLoss from "~/components/ProfitLoss.vue";
 export default {
   name: "EtherTransactions",
+  components: { ProfitLoss },
   data() {
     return {
       etherTransactions: {},
@@ -132,6 +143,7 @@ export default {
       etherBalance: 0,
       tokenBalance: 0,
       currentEthPriceUSD: 0,
+      showProfitLoss: false,
     };
   },
   computed: {

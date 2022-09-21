@@ -1,5 +1,5 @@
 import {getEthPriceByDate,loadCSVData,saveJSONtoFile} from "../utils/historicEthPrice"
-import HISTORICJSONDATA from "../static/HistoricalDataETHPRICE.json"
+import HISTORICJSONDATA from "../utils/HistoricalDataETHPRICE.json"
 
 test('test getEthPriceByDate', async () => {
 
@@ -7,7 +7,7 @@ test('test getEthPriceByDate', async () => {
   expect( getEthPriceByDate(historicdata,"8/19/2022")).toBe("1625.17")
   expect( getEthPriceByDate(historicdata,"6/21/2022")).toBe("1088.17")
   expect( getEthPriceByDate(historicdata,"6/21/1980")).toBe("No price data for that date!")
-  //saveJSONtoFile('static/HistoricalDataETHPRICE.json',historicdata) //ONLY USE THIS WHEN UPDATED HISTORIC JSON DATA
+  //saveJSONtoFile('utils/HistoricalDataETHPRICE.json',historicdata) //ONLY USE THIS WHEN UPDATED HISTORIC JSON DATA
 })
 
 test('test getEthPriceByDataWJSONloadedfromimport', () => {
