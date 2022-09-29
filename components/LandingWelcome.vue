@@ -72,10 +72,11 @@
       aria-close-label="Close notification"
       role="alert"
     >
-      As web3 matures, companies, brands, and infuencers must create, implement,
-      and monitor a web3 marking strategy and will need robust supporting tools
-      that streamline what would otherwise be a redundant and inefficient
-      process. The Web3 Suite is designed to enable web3 strategy success!
+      As web3 matures, companies, brands, and influencers must create,
+      implement, and monitor a web3 marking strategy and will need robust
+      supporting tools that streamline what would otherwise be a redundant and
+      inefficient process. The Web3 Suite is designed to enable web3 strategy
+      success!
     </b-notification>
   </div>
 </template>

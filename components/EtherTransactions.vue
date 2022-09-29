@@ -109,7 +109,13 @@
           <p><b>Current ETH Price (1 ETH):</b> ${{ currentEthPriceUSD }}</p>
         </div>
         <div class="container is-fluid">
-          <button class="button" @click="showProfitLoss = true">
+          <button
+            class="button"
+            @click="
+              if (showProfitLoss) showProfitLoss = false;
+              else showProfitLoss = true;
+            "
+          >
             Show Profit Loss Statement
           </button>
         </div>
