@@ -41,19 +41,27 @@
         </b-table-column>
         <b-table-column
           field="txn_fee"
-          label="TXN FEE"
+          label="TXN FEE Value"
           width="10"
           v-slot="props"
         >
-          {{ getEtherFromWei(props.row.txn_fee) }}
+          ${{
+            toTwoDecimalPoints(
+              props.row.historicEthPrice * getEtherFromWei(props.row.txn_fee)
+            )
+          }}
         </b-table-column>
         <b-table-column
           field="historicEthPrice"
-          label="Value (Time of Transaction)"
+          label="Market Value (Time of Transaction)"
           width="10"
           v-slot="props"
         >
-          ${{ props.row.historicEthPrice * getEtherFromWei(props.row.value) }}
+          ${{
+            toTwoDecimalPoints(
+              props.row.historicEthPrice * getEtherFromWei(props.row.value)
+            )
+          }}
         </b-table-column>
       </b-table>
     </div>
@@ -76,6 +84,9 @@ export default {
     },
     getEtherFromWei(value) {
       return Web3.utils.fromWei(Web3.utils.toBN(value));
+    },
+    toTwoDecimalPoints(value) {
+      return value.toFixed(2);
     },
   },
 };
