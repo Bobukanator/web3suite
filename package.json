@@ -7,7 +7,7 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "test": "jest"
+    "test": "jest --coverage=false"
   },
   "dependencies": {
     "axios": "^0.27.2",

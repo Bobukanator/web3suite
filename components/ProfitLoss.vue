@@ -1,13 +1,20 @@
 <template>
   <div class="card m-2" v-if="isMounted">
     <header class="card-header">
-      <p class="card-header-title">Profit Loss</p>
+      <p class="card-header-title">Web3 Suite Profit Loss Statement</p>
     </header>
+    <div class="content has-text-right">
+      <B>Address:</B> {{ SelectedAddress }}
+    </div>
+    <div class="content has-text-right">
+      {{ new Date(StatementDateRange.start * 1000).toLocaleDateString() }} to
+      {{ new Date(StatementDateRange.end * 1000).toLocaleDateString() }}
+    </div>
     <div class="container is-fluid">
-      <p class="title">Income</p>
+      <p class="title is-5">Investment</p>
       <b-table
-        :data="IncomeTransactions"
-        :bordered="true"
+        :data="IncomeTransactionsWTotal"
+        :bordered="false"
         :striped="true"
         npm
         :narrowed="true"
@@ -21,12 +28,17 @@
           width="10"
           v-slot="props"
         >
-          <span class="tag is-success">
+          <div v-if="props.row.timeStamp != 'Total'">
             {{ new Date(props.row.timeStamp * 1000).toLocaleDateString() }}
-          </span>
+          </div>
+          <div v-if="props.row.timeStamp == 'Total'">
+            <B>{{ props.row.timeStamp }}</B>
+          </div>
         </b-table-column>
-        <b-table-column field="value" label="Value" width="40" v-slot="props">
-          {{ getEtherFromWei(props.row.value) }} ETH
+        <b-table-column field="value" label="Value" width="100" v-slot="props">
+          <div v-if="props.row.timeStamp != 'Total'">
+            {{ getEtherFromWei(props.row.value) }} ETH
+          </div>
         </b-table-column>
         <b-table-column
           field="txn_feeUSD"
@@ -47,10 +59,10 @@
       </b-table>
     </div>
     <div class="container is-fluid">
-      <p class="title">Expenses</p>
+      <p class="title is-5">Expenses</p>
       <b-table
-        :data="ExpenseTransactions"
-        :bordered="true"
+        :data="ExpenseTransactionsWTotal"
+        :bordered="false"
         :striped="true"
         npm
         :narrowed="true"
@@ -64,12 +76,17 @@
           width="10"
           v-slot="props"
         >
-          <span class="tag is-success">
+          <div v-if="props.row.timeStamp != 'Total'">
             {{ new Date(props.row.timeStamp * 1000).toLocaleDateString() }}
-          </span>
+          </div>
+          <div v-if="props.row.timeStamp == 'Total'">
+            <B>{{ props.row.timeStamp }}</B>
+          </div>
         </b-table-column>
-        <b-table-column field="value" label="Value" width="40" v-slot="props">
-          {{ getEtherFromWei(props.row.value) }} ETH
+        <b-table-column field="value" label="Value" width="100" v-slot="props">
+          <div v-if="props.row.timeStamp != 'Total'">
+            {{ getEtherFromWei(props.row.value) }} ETH
+          </div>
         </b-table-column>
         <b-table-column
           field="txn_feeUSD"
@@ -88,10 +105,6 @@
           ${{ props.row.valueUSD }}
         </b-table-column>
       </b-table>
-    </div>
-    <div class="container is-fluid">
-      <p class="title">Totals</p>
-      <B>Total Income</B>${{ calculateTotalIncome() }}
     </div>
   </div>
 </template>
@@ -101,7 +114,10 @@ import { getTransactionTypeFromHex } from "~/utils/cryptoUtils";
 import {
   getIncomeTransactions,
   getExpenseTransactions,
-  calculateIncomeTotal,
+  calculateTotal,
+  calculateFeeTotal,
+  addTotalToTransactions,
+  getTransactionDateRange,
 } from "~/utils/plUtils";
 export default {
   name: "ProfitLoss",
@@ -120,8 +136,20 @@ export default {
     IncomeTransactions: function () {
       return getIncomeTransactions(this.Transactions);
     },
+    IncomeTransactionsWTotal: function () {
+      return addTotalToTransactions(getIncomeTransactions(this.Transactions));
+    },
     ExpenseTransactions: function () {
       return getExpenseTransactions(this.Transactions);
+    },
+    ExpenseTransactionsWTotal: function () {
+      return addTotalToTransactions(getExpenseTransactions(this.Transactions));
+    },
+    StatementDateRange: function () {
+      return getTransactionDateRange(this.Transactions);
+    },
+    SelectedAddress: function () {
+      return this.$store.state.SelectedAddress;
     },
   },
   mounted() {
@@ -137,8 +165,11 @@ export default {
     toTwoDecimalPoints(value) {
       return value.toFixed(2);
     },
-    calculateTotalIncome() {
-      return calculateIncomeTotal(this.IncomeTransactions);
+    calculateTotalValue(transactions) {
+      return calculateTotal(transactions);
+    },
+    calculateFees(transactions) {
+      return calculateFeeTotal(transactions);
     },
   },
 };

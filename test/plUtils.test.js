@@ -1,4 +1,4 @@
-import {getIncomeTransactions,getExpenseTransactions,calculateIncomeTotal} from "../utils/plUtils"
+import {getIncomeTransactions,getExpenseTransactions,calculateTotal,calculateFeeTotal,addTotalToTransactions,getTransactionDateRange} from "../utils/plUtils"
 
 var fs = require('fs');
 const PLTESTDATA = JSON.parse(fs.readFileSync('test/pltestdata.json', 'utf8'));
@@ -27,8 +27,31 @@ test('test getIncomeTransactions', async () => {
   expect(result[1].txn_feeUSD).toBe("2.72")
 })
 
-test('test calculateIncomeTotal', async () => {
+test('test calculateTotal', async () => {
 
-  expect(calculateIncomeTotal(getIncomeTransactions(PLTESTDATA))).toBe(195.96);
+  expect(calculateTotal(getIncomeTransactions(PLTESTDATA))).toBe(195.96);
 
 })
+
+test('test calculateFeeTotal', async () => {
+
+  expect(calculateFeeTotal(getIncomeTransactions(PLTESTDATA))).toBe(1.23);
+
+})
+
+test('test addTotalToTransactions', async () => {
+  const result = addTotalToTransactions(getIncomeTransactions(PLTESTDATA))
+
+  expect(result[2].timeStamp).toBe("Total");
+  expect(result[2].valueUSD).toBe(195.96);
+  expect(result[2].txn_feeUSD).toBe(1.23);
+  
+})
+
+test('test determineDateRange', async () =>{
+
+  const dateRange = getTransactionDateRange(PLTESTDATA);
+  expect(dateRange.start).toBe("1625353716");
+  expect(dateRange.end).toBe("1625511510");
+})
+

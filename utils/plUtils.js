@@ -20,12 +20,41 @@ export function getExpenseTransactions(transactionarray) {
   return expenseTransactions;
 }
 
-export function calculateIncomeTotal(incometransactionarray) {
+export function calculateTotal(transactionarray) {
   let total = 0;
-  incometransactionarray.forEach(transaction => {
+  transactionarray.forEach(transaction => {
     total += parseFloat(transaction.valueUSD);
   })
   return total;
+}
+
+export function calculateFeeTotal(transactionarray) {
+  let total = 0;
+  transactionarray.forEach(transaction => {
+    total += parseFloat(transaction.txn_feeUSD);
+  })
+  return total;
+}
+
+export function addTotalToTransactions(transactionarray){
+  const feetotal = calculateFeeTotal(transactionarray);
+  const valueUSD = calculateTotal(transactionarray);
+  transactionarray.push({
+    timeStamp: "Total",
+    txn_feeUSD: feetotal,
+    valueUSD: valueUSD,
+  })
+  return transactionarray
+}
+
+export function getTransactionDateRange(transactionarray){
+  let daterange = {"start":"error","end":"error"}
+  if(Array.isArray(transactionarray)){
+    const timeStampArray = transactionarray.map(transaction => { return parseInt(transaction.timeStamp)});
+    daterange.start = Math.min(...timeStampArray).toString();
+    daterange.end = Math.max(...timeStampArray).toString();
+  }
+  return daterange
 }
 
 function calculateUSDValues(transaction){
