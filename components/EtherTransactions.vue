@@ -205,17 +205,20 @@ export default {
       this.getTokenBalance();
     },
     async getEtherBalance() {
-      const response = await this.$dataApi.getEtherBalance(
-        this.SelectedAddress
-      );
-      this.etherBalance = response.result;
+      if (!this.$store.state.EtherBalance) {
+        const response = await this.$dataApi.getEtherBalance(
+          this.SelectedAddress
+        );
+        this.etherBalance = response.result;
+        this.$store.commit("set_ether_balance", this.etherBalance);
+      } else this.etherBalance = this.$store.state.EtherBalance;
     },
     async addHistoricEtherPrice(transaction, date) {
       const price = await this.$dataApi.getHistoricEtherBalance(date);
       return addHistoricEthPriceToTransaction(transaction, price);
     },
     async getTokenBalance() {
-      if (this.transactionsExist) {
+      if (this.transactionsExist && !this.$store.state.TokenBalance) {
         this.etherTransactions.result.forEach(async (transaction) => {
           if (this.getTransactionType(transaction.methodId) == "Deposit") {
             //IF DEPOSIT -> money put into token
@@ -224,9 +227,10 @@ export default {
               transaction.to
             );
             this.tokenBalance += Web3.utils.toBN(responseValue.result);
+            this.$store.commit("set_token_balance", this.tokenBalance);
           }
         });
-      }
+      } else this.tokenBalance = this.$store.state.TokenBalance;
     },
     async getEthPrice() {
       const response = await this.$dataApi.getCurrentEthPrice();

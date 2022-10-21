@@ -3,7 +3,9 @@ export const state = () => ({
   UserConnected: false,
   SelectedAddress: "",
   ChainId: "",
-  ChainName: ""
+  ChainName: "",
+  EtherBalance: null,
+  TokenBalance: null,
 })
 
 export const mutations = {
@@ -18,5 +20,11 @@ export const mutations = {
   },
   set_chain(state, chain_id) {
     state.ChainId = chain_id
+  },
+  set_ether_balance(state, balance) {
+    state.EtherBalance = balance
+  },
+  set_token_balance(state, balance) {
+    state.TokenBalance = balance
   }
 }
