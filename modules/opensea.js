@@ -7,6 +7,7 @@ export default function () {
   this.nuxt.hook('render:setupMiddleware', (app) => {
     app.use(bodyParser.json());
     app.use('/api/getopenseaassets', getOpenSeaAssets);
+    app.use('/api/test', testAPI);
   })
 
   async function getOpenSeaAssets(req, res) {
@@ -44,6 +45,15 @@ export default function () {
     const responseProd = { data: null }
 
     const response = { "test": responseTest.data, "prod": responseProd.data }
+
+    sendJSON(response, res);
+  }
+
+  async function testAPI(params, res) {
+
+    console.log("TEST CALLED");
+
+    const response = { "test": "SUCCESS" }
 
     sendJSON(response, res);
   }

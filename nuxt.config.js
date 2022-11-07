@@ -36,7 +36,7 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/buefy
-    'nuxt-buefy', "~/modules/opensea", "~/modules/etherscan", "~/modules/testAPI"
+    'nuxt-buefy', "~/modules/opensea", "~/modules/etherscan"
   ],
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
