@@ -1,6 +1,5 @@
 import axios from 'axios'
 import bodyParser from 'body-parser'
-import url from 'url'
 
 export default function () {
 
