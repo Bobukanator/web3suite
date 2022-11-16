@@ -10,8 +10,8 @@
       {{ new Date(StatementDateRange.start * 1000).toLocaleDateString() }} to
       {{ new Date(StatementDateRange.end * 1000).toLocaleDateString() }}
     </div>
-    <div class="container is-fluid">
-      <p class="title is-5">Investment</p>
+    <div class="section">
+      <h2 class="subtitle">Investment Transactions</h2>
       <b-table
         :data="IncomeTransactionsWTotal"
         :bordered="false"
@@ -58,8 +58,8 @@
         </b-table-column>
       </b-table>
     </div>
-    <div class="container is-fluid">
-      <p class="title is-5">Expenses</p>
+    <div class="section">
+      <h2 class="subtitle">Expenses Transactions</h2>
       <b-table
         :data="ExpenseTransactionsWTotal"
         :bordered="false"
@@ -106,6 +106,45 @@
         </b-table-column>
       </b-table>
     </div>
+    <div class="section">
+      <h2 class="subtitle">Account Summary</h2>
+      <div class="columns">
+        <div class="column">
+          <b-field label="Opening Balance">
+            <b-input v-model="openingBalance" icon="currency-usd"></b-input>
+          </b-field>
+        </div>
+        <div class="column">
+          <b-field label="Closing Balance">
+            <b-input v-model="closingBalance" icon="currency-usd"></b-input>
+          </b-field>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <b-field label="Fiat Invested">
+            <b-input v-model="fiatInvested" icon="currency-usd"></b-input>
+          </b-field>
+        </div>
+        <div class="column">
+          <b-field label="Sold Fiat">
+            <b-input v-model="fiatSold" icon="currency-usd"></b-input>
+          </b-field>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <b-field label="Realized Profit">
+            <b-input v-model="realizedProfit" icon="currency-usd"></b-input>
+          </b-field>
+        </div>
+        <div class="column">
+          <b-field label="Potential Profit">
+            <b-input v-model="unrealizedProfit" icon="currency-usd"></b-input>
+          </b-field>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -130,6 +169,12 @@ export default {
   data() {
     return {
       isMounted: false,
+      openingBalance: 0,
+      closingBalance: 0,
+      fiatInvested: 0,
+      fiatSold: 0,
+      realizedProfit: 0,
+      unrealizedProfit: 0,
     };
   },
   computed: {
@@ -150,6 +195,20 @@ export default {
     },
     SelectedAddress: function () {
       return this.$store.state.SelectedAddress;
+    },
+    EtherBalance: function () {
+      if (!this.$store.state.EtherBalance) return 0;
+      else
+        return Web3.utils.fromWei(
+          Web3.utils.toBN(this.$store.state.EtherBalance)
+        );
+    },
+    TokenBalance: function () {
+      if (!this.$store.state.TokenBalance) return 0;
+      else
+        return Web3.utils.fromWei(
+          Web3.utils.toBN(this.$store.state.TokenBalance)
+        );
     },
   },
   mounted() {
