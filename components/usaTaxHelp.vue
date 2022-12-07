@@ -25,7 +25,12 @@
           width="10"
           v-slot="props"
         >
-          <b-input v-model="props.row.Description"></b-input>
+          <div v-if="props.row.Description != 'Totals'">
+            <b-input v-model="props.row.Description"></b-input>
+          </div>
+          <div v-if="props.row.Description == 'Totals'">
+            <B>{{ props.row.Description }}</B>
+          </div>
         </b-table-column>
         <b-table-column
           field="Date_Acquired"
@@ -33,21 +38,19 @@
           width="10"
           v-slot="props"
         >
-          <b-datetimepicker
+          <b-datepicker
             v-model="props.row.Date_Acquired"
-            rounded
+            :show-week-number="showWeekNumber"
+            :locale="locale"
             placeholder="Click to select..."
             icon="calendar-today"
             :icon-right="selected ? 'close-circle' : ''"
             icon-right-clickable
-            @icon-right-click="clearDateTime"
-            :locale="locale"
-            :first-day-of-week="firstDayOfWeek"
-            :datepicker="{ showWeekNumber }"
-            :timepicker="{ enableSeconds, hourFormat }"
-            horizontal-time-picker
+            @icon-right-click="clearDate"
+            trap-focus
+            v-if="props.row.Description != 'Totals'"
           >
-          </b-datetimepicker>
+          </b-datepicker>
         </b-table-column>
         <b-table-column
           field="Date_Sold"
@@ -55,21 +58,19 @@
           width="10"
           v-slot="props"
         >
-          <b-datetimepicker
+          <b-datepicker
             v-model="props.row.Date_Sold"
-            rounded
+            :show-week-number="showWeekNumber"
+            :locale="locale"
             placeholder="Click to select..."
             icon="calendar-today"
             :icon-right="selected ? 'close-circle' : ''"
             icon-right-clickable
-            @icon-right-click="clearDateTime"
-            :locale="locale"
-            :first-day-of-week="firstDayOfWeek"
-            :datepicker="{ showWeekNumber }"
-            :timepicker="{ enableSeconds, hourFormat }"
-            horizontal-time-picker
+            @icon-right-click="clearDate"
+            trap-focus
+            v-if="props.row.Description != 'Totals'"
           >
-          </b-datetimepicker>
+          </b-datepicker>
         </b-table-column>
         <b-table-column
           field="Proceeds"
@@ -96,6 +97,7 @@
           <b-input v-model="props.row.Gain_Loss" icon="currency-usd"></b-input>
         </b-table-column>
       </b-table>
+      <button class="button" @click="">Add transaction</button>
     </div>
     <div class="section">
       <h2 class="subtitle">Crypto Transactions Long-Term</h2>
@@ -115,7 +117,12 @@
           width="10"
           v-slot="props"
         >
-          <b-input v-model="props.row.Description"></b-input>
+          <div v-if="props.row.Description != 'Totals'">
+            <b-input v-model="props.row.Description"></b-input>
+          </div>
+          <div v-if="props.row.Description == 'Totals'">
+            <B>{{ props.row.Description }}</B>
+          </div>
         </b-table-column>
         <b-table-column
           field="Date_Acquired"
@@ -123,21 +130,19 @@
           width="10"
           v-slot="props"
         >
-          <b-datetimepicker
+          <b-datepicker
             v-model="props.row.Date_Acquired"
-            rounded
+            :show-week-number="showWeekNumber"
+            :locale="locale"
             placeholder="Click to select..."
             icon="calendar-today"
             :icon-right="selected ? 'close-circle' : ''"
             icon-right-clickable
-            @icon-right-click="clearDateTime"
-            :locale="locale"
-            :first-day-of-week="firstDayOfWeek"
-            :datepicker="{ showWeekNumber }"
-            :timepicker="{ enableSeconds, hourFormat }"
-            horizontal-time-picker
+            @icon-right-click="clearDate"
+            trap-focus
+            v-if="props.row.Description != 'Totals'"
           >
-          </b-datetimepicker>
+          </b-datepicker>
         </b-table-column>
         <b-table-column
           field="Date_Sold"
@@ -145,21 +150,19 @@
           width="10"
           v-slot="props"
         >
-          <b-datetimepicker
+          <b-datepicker
             v-model="props.row.Date_Sold"
-            rounded
+            :show-week-number="showWeekNumber"
+            :locale="locale"
             placeholder="Click to select..."
             icon="calendar-today"
             :icon-right="selected ? 'close-circle' : ''"
             icon-right-clickable
-            @icon-right-click="clearDateTime"
-            :locale="locale"
-            :first-day-of-week="firstDayOfWeek"
-            :datepicker="{ showWeekNumber }"
-            :timepicker="{ enableSeconds, hourFormat }"
-            horizontal-time-picker
+            @icon-right-click="clearDate"
+            trap-focus
+            v-if="props.row.Description != 'Totals'"
           >
-          </b-datetimepicker>
+          </b-datepicker>
         </b-table-column>
         <b-table-column
           field="Proceeds"
@@ -186,36 +189,25 @@
           <b-input v-model="props.row.Gain_Loss" icon="currency-usd"></b-input>
         </b-table-column>
       </b-table>
+      <button class="button" @click="">Add transaction</button>
     </div>
   </div>
 </template>
 <script>
+import { createEmptyTransactions } from "~/utils/usaTaxUtils";
 export default {
   name: "USATaxHelp",
   data() {
     return {
       isMounted: false,
-      shortTermTransactions: [
-        {
-          Description: "Description of Property",
-          Date_Acquired: new Date(),
-          Date_Sold: new Date(),
-          Proceeds: "Proceeds",
-          Cost_Basis: "Cost Basis",
-          Gain_Loss: "Gain or loss",
-        },
-      ],
-      longTermTransactions: [
-        {
-          Description: "Description of Property",
-          Date_Acquired: new Date(),
-          Date_Sold: new Date(),
-          Proceeds: "Proceeds",
-          Cost_Basis: "Cost Basis",
-          Gain_Loss: "Gain or loss",
-        },
-      ],
+      shortTermTransactions: createEmptyTransactions(),
+      longTermTransactions: createEmptyTransactions(),
     };
+  },
+  computed: {
+    SelectedAddress: function () {
+      return this.$store.state.SelectedAddress;
+    },
   },
   mounted() {
     this.isMounted = true;

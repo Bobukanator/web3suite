@@ -145,15 +145,11 @@
         </div>
       </div>
     </div>
-    <div class="section">
-      <usaTaxHelp></usaTaxHelp>
-    </div>
   </div>
 </template>
 <script>
 import Web3 from "web3";
 import { getTransactionTypeFromHex } from "~/utils/cryptoUtils";
-import usaTaxHelp from "~/components/usaTaxHelp.vue";
 import {
   getIncomeTransactions,
   getExpenseTransactions,
@@ -163,7 +159,6 @@ import {
   getTransactionDateRange,
 } from "~/utils/plUtils";
 export default {
-  components: { usaTaxHelp },
   name: "ProfitLoss",
   props: {
     Transactions: {
