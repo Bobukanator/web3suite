@@ -97,7 +97,10 @@
           <b-input v-model="props.row.Gain_Loss" icon="currency-usd"></b-input>
         </b-table-column>
       </b-table>
-      <button class="button" @click="">Add transaction</button>
+      <button class="button" @click="addNewRowShort()">Add transaction</button>
+      <button class="button" @click="calculateTotalsShort()">
+        Calculate Totals
+      </button>
     </div>
     <div class="section">
       <h2 class="subtitle">Crypto Transactions Long-Term</h2>
@@ -189,12 +192,19 @@
           <b-input v-model="props.row.Gain_Loss" icon="currency-usd"></b-input>
         </b-table-column>
       </b-table>
-      <button class="button" @click="">Add transaction</button>
+      <button class="button" @click="addNewRowLong()">Add transaction</button>
+      <button class="button" @click="calculateTotalsLong()">
+        Calculate Totals
+      </button>
     </div>
   </div>
 </template>
 <script>
-import { createEmptyTransactions } from "~/utils/usaTaxUtils";
+import {
+  createEmptyTransactions,
+  updateTransactionTotals,
+  addNewTransaction,
+} from "~/utils/usaTaxUtils";
 export default {
   name: "USATaxHelp",
   data() {
@@ -212,6 +222,25 @@ export default {
   mounted() {
     this.isMounted = true;
   },
-  methods: {},
+  methods: {
+    addNewRowShort() {
+      this.shortTermTransactions = addNewTransaction(
+        this.shortTermTransactions
+      );
+    },
+    addNewRowLong() {
+      this.longTermTransactions = addNewTransaction(this.longTermTransactions);
+    },
+    calculateTotalsShort() {
+      this.shortTermTransactions = updateTransactionTotals(
+        this.shortTermTransactions
+      );
+    },
+    calculateTotalsLong() {
+      this.longTermTransactions = updateTransactionTotals(
+        this.longTermTransactions
+      );
+    },
+  },
 };
 </script>
