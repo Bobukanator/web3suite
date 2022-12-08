@@ -11,7 +11,7 @@ export default function () {
   async function joinWaitList(req, res) {
 
     const body = req.body;
-    if (!body || !body.fname || !body.lname || !body.email || !body.message) {
+    if (!body || !body.fname || !body.lname || !body.email) {
       return rejectHitBadRequest(res)
     }
 

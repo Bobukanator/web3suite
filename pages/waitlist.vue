@@ -30,7 +30,7 @@
           <b-input maxlength="200" type="textarea" v-model="message"></b-input>
         </b-field>
         <center>
-          <button class="button is-primary" @click="addToWaitlist()">
+          <button class="button is-primary" @click="addToWaitlist()" v-if="WeCanSubmit">
             Add me please!
           </button>
         </center>
@@ -73,12 +73,17 @@ export default {
         this.email,
         this.message
       );
-      if (response.insertedId != "") {
+      if (response && response.insertedId) {
         this.submitted = true;
       } else {
         this.error = true;
       }
     },
+  },
+  computed: {
+    WeCanSubmit: function () {
+      return this.firstName && this.lastName && this.email
+    }
   },
   head() {
     return {
