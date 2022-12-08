@@ -11,58 +11,45 @@
       <Metamask></Metamask>
     </b-notification>
     <section class="section is-large">
-      <div class="tile is-ancestor">
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Web3 Footprint</b></h4>
-              <p>
-                A digital footprint is a company's, brand's, or influencer's
-                distinctive set of traceable digital activities, contributions,
-                and communications within the web3 ecosystem.
-              </p>
-            </div>
-          </NuxtLink>
-        </div>
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Digital Assets</b></h4>
-              <p>
-                Digital Assets in web3 include anything that exists in digital
-                form and can be owned including crypto currencies and
-                Non-Fungible Tokens (NFTs). The Web3 Suite provides a holistic
-                view of your digital assets.
-              </p>
-            </div>
-          </NuxtLink>
-        </div>
+      <div class="columns">
+        <card title="Web3 Footprint" icon="chart-line" link="/waitlist">
+          A digital footprint is a company's, brand's, or influencer's
+          distinctive set of traceable digital activities, contributions, and
+          communications within the web3 ecosystem.
+        </card>
+        <card
+          title="Web3 Strategic Coach"
+          icon="account-tie-voice-outline"
+          link="/waitlist"
+        >
+          The Web3 suite provides guidance, templates, and general direction to
+          conceive, implement, and monitor a web3 strategy. We are your digital
+          metaverse & web3 coach.
+        </card>
+        <card title="Web3 Tools" icon="hammer-wrench" link="/tools">
+          The Web3 suite provides valuable tools to help you navigate the
+          complex crypto environment. Currently, we offer an easy way to change
+          your MetaVerse wallet network and a tax form guide to get you ready
+          for tax season.
+        </card>
+        <!--<card
+          title="Digital Assets"
+          icon="account-question"
+          link="/interview/jobskillscanner"
+        >
+          Digital Assets in web3 include anything that exists in digital form
+          and can be owned including crypto currencies and Non-Fungible Tokens
+          (NFTs). The Web3 Suite provides a holistic view of your digital
+          assets.
+        </card>-->
       </div>
-      <div class="tile is-ancestor">
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Web3 Strategic Coach</b></h4>
-              <p>
-                The Web3 suite provides guidance, templates, and general
-                direction to conceive, implement, and monitor a web3 strategy.
-                We are your digital metaverse & web3 coach.
-              </p>
-            </div>
-          </NuxtLink>
-        </div>
-        <div class="tile is-parent is-6">
-          <NuxtLink to="/tools">
-            <div class="tile is-child notification is-primary">
-              <h4><b>Web3 Marketing Tools</b></h4>
-              <p>
-                The Web3 Suite provides the ability to create and push content
-                to other popular web3 platforms so you can create once and
-                publish twice!
-              </p>
-            </div>
-          </NuxtLink>
-        </div>
+      <div class="columns" v-if="UserConnected">
+        <card title="Dashboard" icon="view-dashboard" link="/dashboard">
+          The Web3 Suite Dashboard provides crypto account information including
+          a transaction history and the ability to view those transactions as a
+          profit loss statement. More functionality is being added on a regular
+          basis!
+        </card>
       </div>
     </section>
     <b-notification

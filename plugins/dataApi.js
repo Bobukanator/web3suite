@@ -3,7 +3,7 @@ import { unWrap } from '~/utils/fetchUtils'
 export default function (context, inject) {
 
   inject('dataApi', {
-    getAssetsFromOpenSea, getEtherTransactions, getEtherBalance, getTokenBalance, getCurrentEthPrice, getHistoricEtherBalance
+    getAssetsFromOpenSea, getEtherTransactions, getEtherBalance, getTokenBalance, getCurrentEthPrice, getHistoricEtherBalance, addToWaitList
   })
 
   async function getAssetsFromOpenSea(owner) {
@@ -103,6 +103,28 @@ export default function (context, inject) {
         method: 'POST',
         body: JSON.stringify({
           date
+        })
+      }))
+      return response.json;
+
+    } catch (error) {
+      console.error(error)
+    }
+
+  }
+
+  async function addToWaitList(fname, lname, email, message) {
+    try {
+      const response = await unWrap(await fetch(process.env.BASE_URL + "/api/joinwaitlist", {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          fname,
+          lname,
+          email,
+          message
         })
       }))
       return response.json;
