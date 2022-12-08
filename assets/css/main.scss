@@ -79,6 +79,12 @@ $link-focus-border: $primary;
   }
 }
 
+@include from($desktop) {
+  .aboutBackground {
+    background: url("/images/shubham-dhage-Xnf4XmmaRZ8-unsplash.jpg") center center/cover no-repeat;
+  }
+}
+
 //dragdrop styles
 .card-ghost {
   transition: transform 0.18s ease;
