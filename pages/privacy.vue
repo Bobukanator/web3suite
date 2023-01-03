@@ -11,8 +11,8 @@
         sites we own and operate.
       </p>
       <p>
-        This policy is effective as of 3 May 2022 and was last updated on 3 May
-        2022.
+        This policy is effective as of 3 May 2022 and was last updated on 3 January
+        2023.
       </p>
       <h3>Information We Collect</h3>
       <p>
@@ -200,7 +200,7 @@
         For any questions or concerns regarding your privacy, you may contact us
         using the following details:
       </p>
-      <p>Brian at Spero Autem USA # +1 267-753-9235</p>
+      <p>Spero Autem USA # +1 267-753-9235</p>
     </div>
   </section>
 </template>
