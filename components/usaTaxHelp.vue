@@ -3,8 +3,45 @@
     <header class="card-header">
       <p class="card-header-title">Crypto Tax Form Help</p>
     </header>
-    <div class="content has-text-right">
+    <div class="section">
+      <div class="content has-text-left">
+        <p>
+          In many countries, including the United States, taxpayers must report
+          and pay taxes on any gains from cryptocurrency transactions. Reporting
+          must include profits from selling cryptocurrency and income from using
+          cryptocurrency to pay for goods or services.
+        </p>
+        <p>
+          You should keep track of all of your cryptocurrency transactions,
+          including the transaction's date, the cryptocurrency's value at the
+          time, and whether the transaction resulted in a gain or loss. The
+          transaction may be considered a taxable event if you sell or dispose
+          of your cryptocurrency or use it to pay for goods or services.
+        </p>
+        <p>
+          For example, if you buy one bitcoin for $1,000 and later sell it for
+          $5,000, you will have a capital gain of $4,000. Selling the bitcoin is
+          a taxable event. You must report the event on your tax return.
+        </p>
+        <p>
+          Similarly, if you use bitcoin to pay for goods or services, the value
+          you receive will be taxable as income. For example, if you use bitcoin
+          to pay for a $100 pizza, you will need to report $100 of income on
+          your tax return.
+        </p>
+        <p>
+          In the United States, you will generally use Form 8949. The following
+          is an exact reproduction of this form. Our system enables the
+          automatic import of cryptocurrency transactions directly from your
+          cryptocurrency wallet.
+        </p>
+      </div>
+    </div>
+    <div class="content has-text-right" v-if="UserConnected">
       <B>Address:</B> {{ SelectedAddress }}
+    </div>
+    <div class="content has-text-right" v-if="!UserConnected">
+      <B>Please connect your wallet to import transactions.</B>
     </div>
     <div class="content has-text-right">January 1 to December 31</div>
     <div class="section">
@@ -217,6 +254,9 @@ export default {
   computed: {
     SelectedAddress: function () {
       return this.$store.state.SelectedAddress;
+    },
+    UserConnected: function () {
+      return this.$store.state.UserConnected;
     },
   },
   mounted() {
