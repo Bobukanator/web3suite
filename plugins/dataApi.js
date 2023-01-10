@@ -1,9 +1,14 @@
 import { unWrap } from '~/utils/fetchUtils'
+import {
+  getTransactionTypeFromHex,
+  parseTransactions,
+  addHistoricEthPriceToTransaction,
+} from "~/utils/cryptoUtils";
 
 export default function (context, inject) {
 
   inject('dataApi', {
-    getAssetsFromOpenSea, getEtherTransactions, getEtherBalance, getTokenBalance, getCurrentEthPrice, getHistoricEtherBalance, addToWaitList
+    getAssetsFromOpenSea, getEtherTransactions, getEtherBalance, getTokenBalance, getCurrentEthPrice, getHistoricEtherBalance, addToWaitList, getParsedEtherTransactions
   })
 
   async function getAssetsFromOpenSea(owner) {
@@ -36,6 +41,40 @@ export default function (context, inject) {
         })
       }))
       return response.json;
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async function getParsedEtherTransactions(owner) {
+    try {
+      let response = await unWrap(await fetch(process.env.BASE_URL + "/api/getethertransactions", {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          owner
+        })
+      }))
+
+      if (response.json.status == "1") {
+        let transactionsWithHistory = await Promise.all(
+          response.json.result.map(async (transaction) => {
+            const price = await this.getHistoricEtherBalance(new Date(transaction.timeStamp * 1000).toLocaleDateString());
+            return addHistoricEthPriceToTransaction(transaction, price);
+          }
+          )
+        );
+        return parseTransactions(
+          transactionsWithHistory,
+          owner
+        );
+
+      }
+
+
 
     } catch (error) {
       console.error(error)

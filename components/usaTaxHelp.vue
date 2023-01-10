@@ -39,6 +39,9 @@
     </div>
     <div class="content has-text-right" v-if="UserConnected">
       <B>Address:</B> {{ SelectedAddress }}
+      <button class="button" @click="getParsedTransactions()">
+        Import Transactions
+      </button>
     </div>
     <div class="content has-text-right" v-if="!UserConnected">
       <B>Please connect your wallet to import transactions.</B>
@@ -249,6 +252,7 @@ export default {
       isMounted: false,
       shortTermTransactions: createEmptyTransactions(),
       longTermTransactions: createEmptyTransactions(),
+      allTransactions: createEmptyTransactions(),
     };
   },
   computed: {
@@ -280,6 +284,12 @@ export default {
       this.longTermTransactions = updateTransactionTotals(
         this.longTermTransactions
       );
+    },
+    async getParsedTransactions() {
+      const response = await this.$dataApi.getParsedEtherTransactions(
+        this.$store.state.SelectedAddress
+      );
+      this.allTransactions = response;
     },
   },
 };
