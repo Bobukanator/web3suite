@@ -1,5 +1,9 @@
 import { createEmptyTransactions, updateTransactionTotals, addNewTransaction } from "../utils/usaTaxUtils"
 
+var fs = require('fs');
+const ETHERSCANTESTDATA = JSON.parse(fs.readFileSync('test/etherscantestdata2.json', 'utf8'));
+const OWNER = ETHERSCANTESTDATA.owner;
+
 test('test createEmptyTransactions', async () => {
 
   const result = createEmptyTransactions()
@@ -123,5 +127,18 @@ test('test updateTransactionTotals with invalid inputs', async () => {
   expect(result[2].Proceeds).toBe(NaN) //invalid string number + 1 is not a number
   expect(result[2].Cost_Basis).toBe(NaN) //invalid string number + -4 is not a number
   expect(result[2].Gain_Loss).toBe(1) //blank string or nothing is consider zero + 1 would be 1
+
+})
+
+test('test add transactions from etherscan transaction array', async () => {
+
+  //THIS IS A WORK IN PROGRESS -> I am using etherscandata from a random account I found online
+  //To test this in DEV -> I can run the following on the console
+  //$nuxt.$store.commit("set_address", "0xb85a0fe43ef7edc7ac9e594421d59c5c55361f0c");
+
+  //let transactions = addTransactionsFromEtherscan(createEmptyTransactions(), ETHERSCANTESTDATA.result)
+
+
+
 
 })

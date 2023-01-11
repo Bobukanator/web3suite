@@ -1,6 +1,6 @@
 import axios from 'axios'
 import bodyParser from 'body-parser'
-import {getEthPriceByDate} from "../utils/historicEthPrice"
+import { getEthPriceByDate } from "../utils/historicEthPrice"
 import HISTORICJSONDATA from "../utils/HistoricalDataETHPRICE.json"
 
 export default function () {
@@ -10,7 +10,7 @@ export default function () {
     app.use('/api/getethertransactions', getEtherTransactions);
     app.use('/api/getetherbalance', getEtherBalance);
     app.use('/api/gettokenbalance', getTokenBalance);
-    app.use('/api/getcurrentethprice', getCurrentEtherPrice); 
+    app.use('/api/getcurrentethprice', getCurrentEtherPrice);
     app.use('/api/gethistoricethprice', getHistoricEtherPrice);
   })
 
@@ -24,11 +24,11 @@ export default function () {
     var params = {
       "module": "account",
       "action": "txlist",
-      "address":  body.owner,
+      "address": body.owner,
       "startblock": 0,
       "endblock": 99999999,
       "page": 1,
-      "offset": 10,
+      "offset": 1000,
       "sort": "asc",
       "apikey": process.env.ETHERSCAN_APIKEY
     }
@@ -82,7 +82,7 @@ export default function () {
     callEtherTransactions(params, res);
   }
 
-  
+
   async function getHistoricEtherPrice(req, res) {
 
     const body = req.body;
@@ -90,7 +90,7 @@ export default function () {
       return rejectHitBadRequest(res)
     }
 
-    const response = getEthPriceByDate(HISTORICJSONDATA,body.date)
+    const response = getEthPriceByDate(HISTORICJSONDATA, body.date)
     sendJSON(response, res);
   }
 
