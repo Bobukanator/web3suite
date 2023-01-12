@@ -1,7 +1,9 @@
-import { createEmptyTransactions, updateTransactionTotals, addNewTransaction } from "../utils/usaTaxUtils"
+import { createEmptyTransactions, updateTransactionTotals, addNewTransaction, createNewTaxTransaction } from "../utils/usaTaxUtils"
+import { parseTransactions, addHistoricEthPriceToTransaction } from "../utils/cryptoUtils"
 
 var fs = require('fs');
 const ETHERSCANTESTDATA = JSON.parse(fs.readFileSync('test/etherscantestdata2.json', 'utf8'));
+//EtherScan test data from this external random account $nuxt.$store.commit("set_address", "0xb85a0fe43ef7edc7ac9e594421d59c5c55361f0c");
 const OWNER = ETHERSCANTESTDATA.owner;
 
 test('test createEmptyTransactions', async () => {
@@ -130,15 +132,28 @@ test('test updateTransactionTotals with invalid inputs', async () => {
 
 })
 
-test('test add transactions from etherscan transaction array', async () => {
-
-  //THIS IS A WORK IN PROGRESS -> I am using etherscandata from a random account I found online
-  //To test this in DEV -> I can run the following on the console
-  //$nuxt.$store.commit("set_address", "0xb85a0fe43ef7edc7ac9e594421d59c5c55361f0c");
-
-  //let transactions = addTransactionsFromEtherscan(createEmptyTransactions(), ETHERSCANTESTDATA.result)
+test('test add usaTaxForm transactions from two etherscan transactions', async () => {
 
 
+  let parsedTransactions = parseTransactions(ETHERSCANTESTDATA.result, OWNER);
 
+  const expectedDescription = "ETHEREUM (ETH) 1 Units Sold with ID (Txn Hash): 0x3546ee716062f48cc68517c16640ad8dcd7a6b9df1f0091e77af47b5b9627a52"
+  const purchasePrice = "1000"
+  const sellPrice = "1500"
+  //our test data has 1 ETH purchased and then sold 
+  const expectedProceeds = 500;
+  const expectedGainLoss = 498.5; //Capital Gain = Value at disposal (500) - Cost Basis(1.5) = 498.5
+  const expectedCostBasis = 1.5;
+
+  const transactionIn = addHistoricEthPriceToTransaction(parsedTransactions[0], purchasePrice);
+  const transactionOut = addHistoricEthPriceToTransaction(parsedTransactions[2], sellPrice);
+
+  const usaTaxFormTransaction = createNewTaxTransaction(transactionIn, transactionOut);
+  expect(usaTaxFormTransaction.Proceeds).toBe(expectedProceeds);
+  expect(usaTaxFormTransaction.Gain_Loss).toBe(expectedGainLoss);
+  expect(usaTaxFormTransaction.Cost_Basis).toBe(expectedCostBasis);
+  expect(usaTaxFormTransaction.Date_Acquired).toStrictEqual(new Date(transactionIn.timeStamp * 1000));
+  expect(usaTaxFormTransaction.Date_Sold).toStrictEqual(new Date(transactionOut.timeStamp * 1000));
+  expect(usaTaxFormTransaction.Description).toBe(expectedDescription);
 
 })
