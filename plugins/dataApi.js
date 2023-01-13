@@ -74,7 +74,7 @@ export default function (context, inject) {
 
       }
 
-
+      return []
 
     } catch (error) {
       console.error(error)

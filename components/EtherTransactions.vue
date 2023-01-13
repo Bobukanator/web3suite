@@ -134,7 +134,6 @@
 import Web3 from "web3";
 import {
   getTransactionTypeFromHex,
-  parseTransactions,
   addHistoricEthPriceToTransaction,
 } from "~/utils/cryptoUtils";
 import ProfitLoss from "~/components/ProfitLoss.vue";
@@ -143,7 +142,7 @@ export default {
   components: { ProfitLoss },
   data() {
     return {
-      etherTransactions: {},
+      etherTransactions: [],
       transactionsExist: false,
       priceExists: false,
       etherBalance: 0,
@@ -158,12 +157,9 @@ export default {
     },
     parsedEtherTransactions: function () {
       if (this.transactionsExist) {
-        return parseTransactions(
-          this.etherTransactions.result,
-          this.SelectedAddress
-        );
+        return this.etherTransactions;
       }
-      return {};
+      return [];
     },
     TotalFunds: function () {
       return Web3.utils.fromWei(
@@ -188,20 +184,10 @@ export default {
       return getTransactionTypeFromHex(hex);
     },
     async getEtherTransactions() {
-      let transactions = await this.$dataApi.getEtherTransactions(
+      this.etherTransactions = await this.$dataApi.getParsedEtherTransactions(
         this.SelectedAddress
       );
-      if (transactions.status == "1") {
-        this.etherTransactions.result = await Promise.all(
-          transactions.result.map((transaction) =>
-            this.addHistoricEtherPrice(
-              transaction,
-              new Date(transaction.timeStamp * 1000).toLocaleDateString()
-            )
-          )
-        );
-        this.transactionsExist = true;
-      }
+      if (this.etherTransactions.length > 0) this.transactionsExist = true;
       this.getTokenBalance();
     },
     async getEtherBalance() {
@@ -219,7 +205,7 @@ export default {
     },
     async getTokenBalance() {
       if (this.transactionsExist && !this.$store.state.TokenBalance) {
-        this.etherTransactions.result.forEach(async (transaction) => {
+        this.etherTransactions.forEach(async (transaction) => {
           if (this.getTransactionType(transaction.methodId) == "Deposit") {
             //IF DEPOSIT -> money put into token
             const responseValue = await this.$dataApi.getTokenBalance(
