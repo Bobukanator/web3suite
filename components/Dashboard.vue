@@ -1,6 +1,6 @@
 <template>
   <div class="welcomeBackground">
-    <section class="section is-large">
+    <section class="section">
       <div class="container">
         <div class="card m-2">
           <header class="card-header">

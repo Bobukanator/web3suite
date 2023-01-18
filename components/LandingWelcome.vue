@@ -10,7 +10,7 @@
     >
       <Metamask></Metamask>
     </b-notification>
-    <section class="section is-large">
+    <section class="section">
       <div class="columns">
         <card title="Web3 Footprint" icon="chart-line" link="/waitlist">
           A digital footprint is a company's, brand's, or influencer's
