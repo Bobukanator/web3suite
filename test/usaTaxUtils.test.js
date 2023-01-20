@@ -1,5 +1,6 @@
 import { createEmptyTransactions, updateTransactionTotals, addNewTransaction, createNewTaxTransaction } from "../utils/usaTaxUtils"
 import { parseTransactions, addHistoricEthPriceToTransaction } from "../utils/cryptoUtils"
+import { getIncomeTransactions, getExpenseTransactions, } from "~/utils/plUtils";
 
 var fs = require('fs');
 const ETHERSCANTESTDATA = JSON.parse(fs.readFileSync('test/etherscantestdata2.json', 'utf8'));
@@ -157,3 +158,24 @@ test('test add usaTaxForm transactions from two etherscan transactions', async (
   expect(usaTaxFormTransaction.Description).toBe(expectedDescription);
 
 })
+
+test('test check transactions and attempt to determine taxable events', async () => {
+
+
+  let parsedTransactions = parseTransactions(ETHERSCANTESTDATA.result.slice(0, 6), OWNER);
+  //only pulling first six transactions
+  expect(parsedTransactions.length).toBe(6);
+
+  for (const transaction of parsedTransactions) {
+    console.log(transaction.in_out + " on " + new Date(transaction.timeStamp * 1000))
+  }
+
+  const intransactions = getIncomeTransactions(parsedTransactions)
+  const outtransactions = getExpenseTransactions(parsedTransactions)
+
+  //IDEAS - PASS IN ONE OUTTRANSACTION - SHOULD BE THE 
+
+
+})
+
+
