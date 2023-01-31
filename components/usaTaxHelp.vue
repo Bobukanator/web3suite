@@ -37,11 +37,17 @@
         </p>
       </div>
     </div>
-    <div class="content has-text-right" v-if="UserConnected">
+    <div
+      class="content has-text-right"
+      v-if="UserConnected && !importingTransactions"
+    >
       <B>Address:</B> {{ SelectedAddress }}
-      <button class="button" @click="getParsedTransactions()">
+      <button class="button" @click="launchTaxableEventWizard()">
         Import Transactions
       </button>
+    </div>
+    <div class="content" v-if="importingTransactions">
+      <TaxableEventWizard></TaxableEventWizard>
     </div>
     <div class="content has-text-right" v-if="!UserConnected">
       <B>Please connect your wallet to import transactions.</B>
@@ -240,6 +246,7 @@
   </div>
 </template>
 <script>
+import TaxableEventWizard from "~/components/TaxableEventWizard.vue";
 import {
   createEmptyTransactions,
   updateTransactionTotals,
@@ -247,12 +254,13 @@ import {
 } from "~/utils/usaTaxUtils";
 export default {
   name: "USATaxHelp",
+  components: { TaxableEventWizard },
   data() {
     return {
       isMounted: false,
       shortTermTransactions: createEmptyTransactions(),
       longTermTransactions: createEmptyTransactions(),
-      allTransactions: createEmptyTransactions(),
+      importingTransactions: false,
     };
   },
   computed: {
@@ -285,11 +293,8 @@ export default {
         this.longTermTransactions
       );
     },
-    async getParsedTransactions() {
-      const response = await this.$dataApi.getParsedEtherTransactions(
-        this.$store.state.SelectedAddress
-      );
-      this.allTransactions = response;
+    launchTaxableEventWizard() {
+      this.importingTransactions = true;
     },
   },
 };

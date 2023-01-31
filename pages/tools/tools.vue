@@ -8,12 +8,12 @@
   </section>
 </template>
 <script>
-import ChangeNetwork from "../components/ChangeNetwork.vue";
-import Metamask from "../components/metamask.vue";
+import ChangeNetwork from "~/components/ChangeNetwork.vue";
+import Metamask from "~/components/metamask.vue";
 import usaTaxHelp from "~/components/usaTaxHelp.vue";
 
 export default {
-  components: { ChangeNetwork, Metamask },
+  components: { ChangeNetwork, Metamask, usaTaxHelp },
   data() {
     return {};
   },

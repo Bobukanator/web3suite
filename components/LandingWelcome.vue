@@ -26,7 +26,7 @@
           conceive, implement, and monitor a web3 strategy. We are your digital
           metaverse & web3 coach.
         </card>
-        <card title="Web3 Tools" icon="hammer-wrench" link="/tools">
+        <card title="Web3 Tools" icon="hammer-wrench" link="/tools/tools">
           The Web3 suite provides valuable tools to help you navigate the
           complex crypto environment. Currently, we offer an easy way to change
           your MetaVerse wallet network and a tax form guide to get you ready

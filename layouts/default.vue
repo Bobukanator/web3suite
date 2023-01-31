@@ -20,7 +20,7 @@
           </b-navbar-item>
           <b-navbar-item
             tag="router-link"
-            :to="{ path: '/tools' }"
+            :to="{ path: '/tools/tools' }"
             v-if="UserConnected"
           >
             Tools
