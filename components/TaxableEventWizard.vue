@@ -2,42 +2,93 @@
   <section class="section" v-if="UserConnected">
     <div class="content has-text-centered" v-if="importedTransaction">
       <h1 class="title">Welcome to the Taxable Event Wizard</h1>
+      <i
+        >NOTE THIS FUNCTIONALITY IS PARTIALLY COMPLETE - Please enter
+        transactions manually for now</i
+      >
       <div class="content has-text-left">
         We found transactions spanning from
         {{ new Date(StatementDateRange.start * 1000).toLocaleDateString() }} to
         {{ new Date(StatementDateRange.end * 1000).toLocaleDateString() }}.
       </div>
+
       <b-steps :label-position="bottom" vertical>
         <b-step-item label="Verify Taxable Event" icon="cash">
           <div class="section">
             <div class="content has-text-centered">
-              <i>WORK IN PROGRESS</i>
-              0.13 was transferred out on July 4th, 2021. <br />
-              Is this a taxable event?
-              <b-switch
-                v-model="position"
-                true-value="is-right"
-                false-value="is-left"
-              >
-                Yes
-              </b-switch>
+              {{ getEtherFromWei(CurrentExpenseTransactions.value) }}
+              ETH was transferred on
+              {{
+                new Date(
+                  CurrentExpenseTransactions.timeStamp * 1000
+                ).toLocaleDateString()
+              }}. <br /><br />
+              <b>Is this a taxable event?</b><br /><br />
+
+              <b-switch v-model="taxableEventSwitch"> Yes </b-switch>
             </div>
           </div>
         </b-step-item>
 
         <b-step-item label="Choose date acquired" icon="calendar-range">
-          Profile: Lorem ipsum dolor sit amet. <br />
-          Profile: Lorem ipsum dolor sit amet.? <br />
-          Profile: Lorem ipsum dolor sit amet. <br />
-          Profile: Lorem ipsum dolor sit amet.
+          <div v-if="taxableEventSwitch">
+            Please select YES if this is the transaction in which you acquired
+            the ether. <br />
+
+            <div class="section">
+              <b-table
+                :data="IncomeTransactions"
+                :bordered="false"
+                :striped="true"
+                npm
+                :narrowed="true"
+                :hoverable="true"
+                :focusable="true"
+                :mobile-cards="true"
+              >
+                <b-table-column
+                  field="timeStamp"
+                  label="Date"
+                  width="10"
+                  v-slot="props"
+                >
+                  <div v-if="props.row.timeStamp != 'Total'">
+                    {{
+                      new Date(props.row.timeStamp * 1000).toLocaleDateString()
+                    }}
+                  </div>
+                  <div v-if="props.row.timeStamp == 'Total'">
+                    <B>{{ props.row.timeStamp }}</B>
+                  </div>
+                </b-table-column>
+                <b-table-column
+                  field="value"
+                  label="Value"
+                  width="100"
+                  v-slot="props"
+                >
+                  <div v-if="props.row.timeStamp != 'Total'">
+                    {{ getEtherFromWei(props.row.value) }} ETH
+                  </div>
+                </b-table-column>
+                <b-table-column label="Acquired?" width="10">
+                  <b-switch v-model="taxableEventAcquired"> Yes </b-switch>
+                </b-table-column>
+              </b-table>
+            </div>
+          </div>
+          <div v-if="!taxableEventSwitch">
+            <br /><br /><br /><b>No taxable events found.</b> <br />
+          </div>
         </b-step-item>
 
         <b-step-item label="Review" icon="marker-check" disabled>
-          Social: Lorem ipsum dolor sit amet. <br />
-          Social: Lorem ipsum dolor sit amet. <br />
-          Social: Lorem ipsum dolor sit amet. <br />
-          Social: Lorem ipsum dolor sit amet. <br />
-          Social: Lorem ipsum dolor sit amet.
+          <div v-if="!taxableEventSwitch">
+            <br /><br /><br /><b
+              >No taxable events found. There are no transactions to import.</b
+            >
+            <br />
+          </div>
         </b-step-item>
       </b-steps>
     </div>
@@ -48,12 +99,20 @@
   </section>
 </template>
 <script>
-import { getTransactionDateRange } from "~/utils/plUtils";
+import Web3 from "web3";
+import {
+  getTransactionDateRange,
+  getIncomeTransactions,
+  getExpenseTransactions,
+} from "~/utils/plUtils";
 export default {
   name: "TaxableEventWizard",
   data() {
     return {
       importedTransaction: false,
+      expenseIndex: 0,
+      taxableEventSwitch: false,
+      taxableEventAcquired: false,
     };
   },
   computed: {
@@ -71,6 +130,15 @@ export default {
         return getTransactionDateRange(this.allTransactions);
       return false;
     },
+    IncomeTransactions: function () {
+      return getIncomeTransactions(this.allTransactions);
+    },
+    ExpenseTransactions: function () {
+      return getExpenseTransactions(this.allTransactions);
+    },
+    CurrentExpenseTransactions: function () {
+      return getExpenseTransactions(this.allTransactions)[this.expenseIndex];
+    },
   },
   mounted() {
     this.getParsedTransactions();
@@ -83,6 +151,9 @@ export default {
       this.allTransactions = response;
       this.importedTransaction = true;
     },
+    getEtherFromWei(value) {
+      return Web3.utils.fromWei(Web3.utils.toBN(value));
+    },
   },
 };
-</script>
+</script>1
