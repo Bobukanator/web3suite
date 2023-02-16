@@ -71,8 +71,10 @@
                     {{ getEtherFromWei(props.row.value) }} ETH
                   </div>
                 </b-table-column>
-                <b-table-column label="Acquired?" width="10">
-                  <b-switch v-model="taxableEventAcquired"> Yes </b-switch>
+                <b-table-column label="Acquired?" width="10" v-slot="props">
+                  <b-switch v-model="props.row.taxableEventAcquired">
+                    Yes
+                  </b-switch>
                 </b-table-column>
               </b-table>
             </div>
@@ -131,7 +133,11 @@ export default {
       return false;
     },
     IncomeTransactions: function () {
-      return getIncomeTransactions(this.allTransactions);
+      let incomeTransactions = getIncomeTransactions(this.allTransactions);
+      incomeTransactions.forEach((transaction) => {
+        transaction.taxableEventAcquired = false;
+      });
+      return incomeTransactions;
     },
     ExpenseTransactions: function () {
       return getExpenseTransactions(this.allTransactions);
