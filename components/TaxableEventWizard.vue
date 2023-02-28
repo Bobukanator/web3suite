@@ -37,7 +37,7 @@
 
             <div class="section">
               <b-table
-                :data="IncomeTransactions"
+                :data="incomeTransactions"
                 :bordered="false"
                 :striped="true"
                 npm
@@ -72,7 +72,10 @@
                   </div>
                 </b-table-column>
                 <b-table-column label="Acquired?" width="10" v-slot="props">
-                  <b-switch v-model="props.row.taxableEventAcquired">
+                  <b-switch
+                    v-model="props.row.taxableEventAcquired"
+                    @input="refreshAcquiredCount()"
+                  >
                     Yes
                   </b-switch>
                 </b-table-column>
@@ -84,11 +87,15 @@
           </div>
         </b-step-item>
 
-        <b-step-item label="Review" icon="marker-check" disabled>
+        <b-step-item label="Review" icon="marker-check">
           <div v-if="!taxableEventSwitch">
             <br /><br /><br /><b
               >No taxable events found. There are no transactions to import.</b
             >
+            <br />
+          </div>
+          <div v-if="acquiredCount > 0">
+            <br /><br /><br /><b>Taxable acquired event found.</b>
             <br />
           </div>
         </b-step-item>
@@ -115,6 +122,10 @@ export default {
       expenseIndex: 0,
       taxableEventSwitch: false,
       taxableEventAcquired: false,
+      allTransactions: [],
+      incomeTransactions: [],
+      expenseTransactions: [],
+      acquiredCount: 0,
     };
   },
   computed: {
@@ -132,18 +143,16 @@ export default {
         return getTransactionDateRange(this.allTransactions);
       return false;
     },
-    IncomeTransactions: function () {
-      let incomeTransactions = getIncomeTransactions(this.allTransactions);
-      incomeTransactions.forEach((transaction) => {
-        transaction.taxableEventAcquired = false;
-      });
-      return incomeTransactions;
-    },
-    ExpenseTransactions: function () {
-      return getExpenseTransactions(this.allTransactions);
-    },
     CurrentExpenseTransactions: function () {
-      return getExpenseTransactions(this.allTransactions)[this.expenseIndex];
+      return this.expenseTransactions[this.expenseIndex];
+    },
+    TaxableAcquiredEventCount: function () {
+      let count = 0;
+      this.incomeTransactions.forEach((transaction) => {
+        if (transaction.taxableEventAcquired) count++;
+        console.log(count);
+      });
+      return count;
     },
   },
   mounted() {
@@ -155,10 +164,27 @@ export default {
         this.$store.state.SelectedAddress
       );
       this.allTransactions = response;
+
+      this.incomeTransactions = getIncomeTransactions(this.allTransactions);
+      this.incomeTransactions.forEach((transaction) => {
+        transaction.taxableEventAcquired = false;
+      });
+
+      this.expenseTransactions = getExpenseTransactions(this.allTransactions);
+
       this.importedTransaction = true;
     },
     getEtherFromWei(value) {
       return Web3.utils.fromWei(Web3.utils.toBN(value));
+    },
+    refreshAcquiredCount() {
+      console.log("REFRESHCOUNT");
+      let count = 0;
+      this.incomeTransactions.forEach((transaction) => {
+        if (transaction.taxableEventAcquired) count++;
+        console.log(count);
+      });
+      this.acquiredCount = count;
     },
   },
 };
