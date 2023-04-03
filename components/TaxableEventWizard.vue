@@ -96,6 +96,12 @@
           </div>
           <div v-if="acquiredCount > 0">
             <br /><br /><br /><b>Taxable acquired event found.</b>
+            <button
+              class="button"
+              @click="createNewTaxTransactionFromAcquired()"
+            >
+              Calculate Tax Event
+            </button>
             <br />
           </div>
         </b-step-item>
@@ -114,6 +120,7 @@ import {
   getIncomeTransactions,
   getExpenseTransactions,
 } from "~/utils/plUtils";
+import { createNewTaxTransaction } from "~/utils/usaTaxUtils";
 export default {
   name: "TaxableEventWizard",
   data() {
@@ -126,6 +133,7 @@ export default {
       incomeTransactions: [],
       expenseTransactions: [],
       acquiredCount: 0,
+      usaTaxTransaction: [],
     };
   },
   computed: {
@@ -185,6 +193,18 @@ export default {
         console.log(count);
       });
       this.acquiredCount = count;
+    },
+    createNewTaxTransactionFromAcquired() {
+      let incomeTransaction = {};
+      this.incomeTransactions.forEach((transaction) => {
+        if (transaction.taxableEventAcquired) incomeTransaction = transaction;
+      });
+      this.usaTaxTransaction.push(
+        createNewTaxTransaction(
+          incomeTransaction,
+          this.CurrentExpenseTransactions
+        )
+      );
     },
   },
 };
